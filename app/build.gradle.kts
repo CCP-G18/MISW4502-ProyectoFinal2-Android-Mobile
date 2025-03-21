@@ -102,19 +102,24 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     )
 }
 
+tasks.register("testDebugUnitTestCoverage") {
+    dependsOn("testDebugUnitTest", "jacocoTestReport")
+}
 
 
 tasks.register("checkCoverage") {
     dependsOn("jacocoTestReport")
 
     doLast {
-        val reportFile = file("${buildDir}/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
+        val reportFile = layout.buildDirectory.file("reports/jacoco/jacocoTestReport/jacocoTestReport.xml").get()
+        val htmlReportDir = layout.buildDirectory.dir("reports/jacoco/jacocoTestReport/html").get()
+        val htmlReportLink = "file://${htmlReportDir.asFile.absolutePath}/index.html"
 
-        if (!reportFile.exists()) {
+        if (!reportFile.asFile.exists()) {
             throw GradleException("❌ Coverage report not found. Make sure tests run successfully.")
         }
 
-        val xmlContent = reportFile.readText()
+        val xmlContent = reportFile.asFile.readText()
         val regex =
             """<counter type="INSTRUCTION" missed="(\d+)" covered="(\d+)"/>""".toRegex()
         val matchResult = regex.find(xmlContent)
@@ -124,7 +129,8 @@ tasks.register("checkCoverage") {
             val covered = matchResult.groupValues[2].toInt()
             val coverage = covered.toDouble() / (missed + covered) * 100
 
-            println("📊 Code Coverage: $coverage%")
+            println(" Code Coverage: $coverage%")
+            println(" Coverage Report: $htmlReportLink")
 
             if (coverage < 70) {
                 throw GradleException("❌ Code coverage is below 70%: $coverage%")
