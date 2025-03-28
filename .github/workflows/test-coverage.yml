@@ -65,8 +65,29 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: Nexus 6
-          emulator-boot-timeout: 600
           disable-animations: true
-          emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect
+          disable-linux-hw-accel: true
+          emulator-boot-timeout: 800
+          emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot -no-metrics
           script: ./gradlew connectedDebugAndroidTest
 
+      - name: Verify emulator booted and is online
+        run: |
+          echo "⏳ Waiting for emulator to boot..."
+          boot_completed=""
+          retry=0
+          max_retry=30
+          until [[ "$boot_completed" == "1" || $retry -ge $max_retry ]]; do
+            sleep 10
+            boot_completed=$(adb -e shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
+            echo "Boot status: $boot_completed"
+            ((retry++))
+          done
+          
+          if [[ "$boot_completed" != "1" ]]; then
+            echo "❌ Emulator failed to boot properly after $((10 * max_retry)) seconds."
+            adb devices
+            exit 1
+          else
+            echo "✅ Emulator is up and running!"
+          fi
