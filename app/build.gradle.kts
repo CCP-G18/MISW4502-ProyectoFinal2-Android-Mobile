@@ -2,12 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    jacoco
+    id("jacoco")
 }
 
 android {
     namespace = "com.g18.cpp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.g18.cpp"
@@ -21,7 +21,9 @@ android {
 
     buildTypes {
         debug {
-             enableUnitTestCoverage = true
+            isMinifyEnabled = false
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
         release {
             isMinifyEnabled = false
@@ -44,46 +46,105 @@ android {
     }
 }
 
+tasks.withType<Test> {
+    finalizedBy("jacocoTestReport")
+}
+
 tasks.register<JacocoReport>("jacocoTestReport") {
     dependsOn("testDebugUnitTest")
 
+    mustRunAfter("testDebugUnitTest")
+    outputs.upToDateWhen { false }
+
     reports {
-        xml.required.set(true)  // Necesario para validación automática
+        xml.required.set(true)
         html.required.set(true)
     }
 
-    sourceDirectories.setFrom(files("$projectDir/src/main/java"))
-    classDirectories.setFrom(
-        files(fileTree("${layout.buildDirectory}/intermediates/javac/debug") {
-            exclude("**/R.class", "**/R\$*.class", "**/BuildConfig.class", "**/Manifest.class")
-        })
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R\$*.class",
+        "**/BuildConfig.class",
+        "**/Manifest.class",
+        "**/*Test*",
+        "**/*Activity*",
+        "**/*Fragment*",
+        "**/*Theme*",
+        "**/*Type*",
+        "**/*Color*",
     )
-    executionData.setFrom(files("${layout.buildDirectory}/jacoco/testDebugUnitTest.exec"))
+
+    // 🔥 Updated paths for compiled classes (for both Java and Kotlin)
+    val javaTree =
+        layout.buildDirectory.dir("intermediates/javac/debug/classes").orNull?.asFileTree?.matching {
+            exclude(fileFilter)
+        } ?: fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/debug")).matching {
+            exclude(
+                fileFilter
+            )
+        }
+
+    val kotlinTree =
+        layout.buildDirectory.dir("tmp/kotlin-classes/debug").orNull?.asFileTree?.matching {
+            exclude(fileFilter)
+        } ?: fileTree(layout.buildDirectory.dir("intermediates/javac/debug/classes")).matching {
+            exclude(
+                fileFilter
+            )
+        }
+
+    sourceDirectories.setFrom(files("${project.projectDir}/src/main/java"))
+    classDirectories.setFrom(files(javaTree, kotlinTree))
+
+    // 🔥 Corrected execution data path
+    executionData.setFrom(
+        layout.buildDirectory.file(
+            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+        )
+    )
 }
+
+tasks.register("testDebugUnitTestCoverage") {
+    dependsOn("testDebugUnitTest", "jacocoTestReport")
+}
+
 
 tasks.register("checkCoverage") {
     dependsOn("jacocoTestReport")
 
     doLast {
-        val reportFile = file("${layout.buildDirectory}/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
-        if (!reportFile.exists()) {
-            throw GradleException("Coverage report not found")
+        val reportFile = layout.buildDirectory.file("reports/jacoco/jacocoTestReport/jacocoTestReport.xml").get()
+        val htmlReportDir = layout.buildDirectory.dir("reports/jacoco/jacocoTestReport/html").get()
+        val htmlReportLink = "file://${htmlReportDir.asFile.absolutePath}/index.html"
+
+        if (!reportFile.asFile.exists()) {
+            throw GradleException("❌ Coverage report not found. Make sure tests run successfully.")
         }
 
-        val coverage = reportFile.readText()
-            .substringAfter("<counter type=\"INSTRUCTION\" missed=\"")
-            .substringBefore("\" covered=\"")
-            .split("\" covered=\"")
-            .map { it.toInt() }
-            .let { (missed, covered) -> covered.toDouble() / (missed + covered) * 100 }
+        val xmlContent = reportFile.asFile.readText()
+        val regex =
+            """<counter type="INSTRUCTION" missed="(\d+)" covered="(\d+)"/>""".toRegex()
+        val matchResult = regex.find(xmlContent)
 
-        println("Coverage: $coverage%")
+        if (matchResult != null) {
+            val missed = matchResult.groupValues[1].toInt()
+            val covered = matchResult.groupValues[2].toInt()
+            val coverage = covered.toDouble() / (missed + covered) * 100
 
-        if (coverage < 70) {
-            throw GradleException("Coverage is below 70%: $coverage%")
+            println(" Code Coverage: $coverage%")
+            println(" Coverage Report: $htmlReportLink")
+
+            if (coverage < 70) {
+                throw GradleException("❌ Code coverage is below 70%: $coverage%")
+            } else {
+                println("✅ Code coverage meets the threshold: $coverage%")
+            }
+        } else {
+            println("There's no code coverage data.")
         }
     }
 }
+
 
 dependencies {
 
