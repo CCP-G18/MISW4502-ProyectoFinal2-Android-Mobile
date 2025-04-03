@@ -1,4 +1,4 @@
-package com.g18.cpp.ui.theme
+package com.g18.ccp.presentation.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -11,9 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = MainColor,
+    secondary = SecondaryColor,
+    tertiary = BlackColor,
+    background = BackgroundColor
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -33,7 +34,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun CPPTheme(
+fun CCPTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,

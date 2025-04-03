@@ -1,4 +1,4 @@
-package com.g18.cpp
+package com.g18.ccp
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -17,6 +17,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.g18.cpp", appContext.packageName)
+        assertEquals("com.g18.ccp", appContext.packageName)
     }
 }

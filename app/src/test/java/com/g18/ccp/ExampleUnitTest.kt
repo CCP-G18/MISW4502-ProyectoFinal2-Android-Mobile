@@ -1,4 +1,4 @@
-package com.g18.cpp
+package com.g18.ccp
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

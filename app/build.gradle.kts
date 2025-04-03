@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.g18.cpp"
+    namespace = "com.g18.ccp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.g18.cpp"
+        applicationId = "com.g18.ccp"
         minSdk = 27
         targetSdk = 34
         versionCode = 1
@@ -156,7 +156,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
+    testImplementation(libs.junit.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
