@@ -69,6 +69,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*Test*",
         "**/*Activity*",
         "**/*Fragment*",
+        "**/*Screen*",
         "**/*Theme*",
         "**/*Type*",
         "**/*Color*",
