@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">CPP</string>
+    <string name="app_name">CCP</string>
+    <string name="entry_title_text">Comercializadora de productos</string>
+    <string name="sign_in_text">Ingresar</string>
 </resources>

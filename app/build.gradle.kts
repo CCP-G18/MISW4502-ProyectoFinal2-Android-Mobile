@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.g18.cpp"
+    namespace = "com.g18.ccp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.g18.cpp"
+        applicationId = "com.g18.ccp"
         minSdk = 27
         targetSdk = 34
         versionCode = 1
@@ -69,6 +69,8 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*Test*",
         "**/*Activity*",
         "**/*Fragment*",
+        "**/*Screen*",
+        "**/*Composable*",
         "**/*Theme*",
         "**/*Type*",
         "**/*Color*",
@@ -98,9 +100,12 @@ tasks.register<JacocoReport>("jacocoTestReport") {
 
     // 🔥 Corrected execution data path
     executionData.setFrom(
-        layout.buildDirectory.file(
-            "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
-        )
+        files(
+            layout.buildDirectory.file("jacoco/testDebugUnitTest.exec").get().asFile,
+            layout.buildDirectory.file(
+                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
+            ).get().asFile
+        ).filter { it.exists() }
     )
 }
 
@@ -113,7 +118,8 @@ tasks.register("checkCoverage") {
     dependsOn("jacocoTestReport")
 
     doLast {
-        val reportFile = layout.buildDirectory.file("reports/jacoco/jacocoTestReport/jacocoTestReport.xml").get()
+        val reportFile =
+            layout.buildDirectory.file("reports/jacoco/jacocoTestReport/jacocoTestReport.xml").get()
         val htmlReportDir = layout.buildDirectory.dir("reports/jacoco/jacocoTestReport/html").get()
         val htmlReportLink = "file://${htmlReportDir.asFile.absolutePath}/index.html"
 
@@ -122,25 +128,44 @@ tasks.register("checkCoverage") {
         }
 
         val xmlContent = reportFile.asFile.readText()
-        val regex =
-            """<counter type="INSTRUCTION" missed="(\d+)" covered="(\d+)"/>""".toRegex()
-        val matchResult = regex.find(xmlContent)
 
-        if (matchResult != null) {
-            val missed = matchResult.groupValues[1].toInt()
-            val covered = matchResult.groupValues[2].toInt()
-            val coverage = covered.toDouble() / (missed + covered) * 100
+        val classRegex =
+            """<class name="([^"]+)".*?>.*?<counter type="INSTRUCTION" missed="(\d+)" covered="(\d+)"/>""".toRegex(
+                RegexOption.DOT_MATCHES_ALL
+            )
+        val failingClasses = mutableListOf<Pair<String, Double>>()
 
-            println(" Code Coverage: $coverage%")
-            println(" Coverage Report: $htmlReportLink")
+        var globalMissed = 0
+        var globalCovered = 0
 
-            if (coverage < 70) {
-                throw GradleException("❌ Code coverage is below 70%: $coverage%")
-            } else {
-                println("✅ Code coverage meets the threshold: $coverage%")
+        for (match in classRegex.findAll(xmlContent)) {
+            val className = match.groupValues[1].replace("/", ".")
+            val missed = match.groupValues[2].toInt()
+            val covered = match.groupValues[3].toInt()
+            val total = missed + covered
+            val coverage = if (total > 0) covered.toDouble() / total * 100 else 100.0
+
+            globalMissed += missed
+            globalCovered += covered
+
+            if (coverage < 70.0) {
+                failingClasses.add(className to coverage)
             }
+        }
+
+        val globalCoverage = globalCovered.toDouble() / (globalCovered + globalMissed) * 100
+
+        println("📊 Global Coverage: ${"%.2f".format(globalCoverage)}%")
+        println("📄 HTML Report: $htmlReportLink")
+
+        if (failingClasses.isNotEmpty()) {
+            println("❌ Classes below 70% coverage:")
+            failingClasses.sortedBy { it.second }.forEach { (name, cov) ->
+                println(" - $name => ${"%.2f".format(cov)}%")
+            }
+            throw GradleException("❌ Some classes do not meet the coverage threshold.")
         } else {
-            println("There's no code coverage data.")
+            println("✅ All classes meet the 70% coverage threshold.")
         }
     }
 }
@@ -156,7 +181,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
+    testImplementation(libs.junit.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

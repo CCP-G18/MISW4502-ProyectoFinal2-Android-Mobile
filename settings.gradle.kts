@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CPP"
+rootProject.name = "CCP"
 include(":app")
