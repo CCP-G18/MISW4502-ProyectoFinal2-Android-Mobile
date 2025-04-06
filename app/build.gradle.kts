@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.parcelize)
+    alias(libs.plugins.serialization)
     id("jacoco")
 }
 
@@ -31,6 +33,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+
+    kotlin {
+        sourceSets.all {
+            languageSettings.optIn("kotlinx.serialization.ExperimentalSerializationApi")
         }
     }
 
@@ -74,6 +82,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*Theme*",
         "**/*Type*",
         "**/*Color*",
+        "**/*RetrofitProvider*",
     )
 
     // 🔥 Updated paths for compiled classes (for both Java and Kotlin)
@@ -182,6 +191,15 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.security.crypto)
+    implementation(libs.core.koin)
+    implementation(libs.viewmodel.koin)
+    implementation(libs.integration.koin)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
+    implementation(libs.datastore)
+    implementation(libs.serialization.json)
+    implementation(libs.gson)
     testImplementation(libs.junit)
     testImplementation(libs.junit.junit)
     androidTestImplementation(libs.androidx.junit)

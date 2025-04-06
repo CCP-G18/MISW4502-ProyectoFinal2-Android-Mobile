@@ -1,5 +1,6 @@
-package com.g18.ccp.presentation.ui.auth
+package com.g18.ccp.ui.auth
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -21,12 +22,14 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,10 +41,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getString
 import com.g18.ccp.R
+import com.g18.ccp.core.utils.auth.LoginUiState
+import com.g18.ccp.core.utils.error.getErrorMessage
+import com.g18.ccp.presentation.auth.LoginViewModel
 import com.g18.ccp.presentation.theme.BackgroundColor
 import com.g18.ccp.presentation.theme.BlackColor
 import com.g18.ccp.presentation.theme.ButtonBackgroundColor
@@ -49,13 +54,28 @@ import com.g18.ccp.presentation.theme.SecondaryColor
 
 @Composable
 fun LoginScreen(
+    viewModel: LoginViewModel,
     onBackClick: () -> Unit = {},
-    onLoginClick: () -> Unit = {}
+    onLoginSuccess: () -> Unit = {}
 ) {
     val context = LocalContext.current
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var showPassword by remember { mutableStateOf(false) }
+    val loginState by viewModel.uiState
+
+    LaunchedEffect(loginState) {
+        when (loginState) {
+            is LoginUiState.Error -> {
+
+            }
+
+            is LoginUiState.Success -> {
+                onLoginSuccess()
+                viewModel.resetLoginState()
+            }
+
+            else -> {
+            }
+        }
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -90,62 +110,106 @@ fun LoginScreen(
                     color = BackgroundColor,
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                EmailComponent(context, viewModel)
 
-                CCPTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = getString(context, R.string.email_text),
-                    trailingIcon = {
-                        val icon = if (showPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
-                        IconButton(onClick = { showPassword = !showPassword }) {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = if (showPassword) "Ocultar" else "Mostrar",
-                                tint = BlackColor
-                            )
-                        }
+                PasswordComponent(context, viewModel)
+
+                Spacer(modifier = Modifier.height(56.dp))
+
+                when (loginState) {
+                    is LoginUiState.Loading -> CircularProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 36.dp)
+                            .height(48.dp)
+                    )
+
+                    is LoginUiState.Error -> Text(
+                        modifier = Modifier.height(48.dp),
+                        text = (loginState as LoginUiState.Error).exception.getErrorMessage(context),
+                        color = MaterialTheme.colorScheme.error
+                    )
+
+                    else -> {
+                        // Do nothing
                     }
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                CCPTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = "Contraseña",
-                    visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = {
-                        val icon = if (showPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
-                        IconButton(onClick = { showPassword = !showPassword }) {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = if (showPassword) "Ocultar" else "Mostrar",
-                                tint = BlackColor
-                            )
-                        }
-                    }
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                // 🟫 Botón Acceder
+                }
                 Button(
-                    onClick = onLoginClick,
+                    onClick = {
+                        viewModel.validateAndLogin()
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(horizontal = 36.dp)
                         .height(48.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = ButtonBackgroundColor,
                         contentColor = BlackColor
-                    )
+                    ),
+                    enabled = viewModel.dataIsValid() && loginState !is LoginUiState.Loading
                 ) {
-                    Text("Acceder")
+                    Text(getString(context, R.string.access_text))
                 }
             }
         }
     }
+}
+
+@Composable
+private fun EmailComponent(context: Context, viewModel: LoginViewModel) {
+    var emailError by remember { mutableStateOf<String?>(null) }
+
+    Spacer(modifier = Modifier.height(32.dp))
+
+    CCPTextField(
+        value = viewModel.email.value,
+        onValueChange = { emailValue ->
+            viewModel.onEmailChange(emailValue)
+            emailError = getString(context, R.string.invalid_email_text)
+                .takeIf { !viewModel.isEmailValid.value }
+        },
+        label = getString(context, R.string.email_text),
+        isError = emailError != null,
+        errorMessage = emailError
+    )
+}
+
+@Composable
+private fun PasswordComponent(context: Context, viewModel: LoginViewModel) {
+    var showPassword by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+
+    Spacer(modifier = Modifier.height(24.dp))
+
+    CCPTextField(
+        value = viewModel.password.value,
+        onValueChange = { password ->
+            viewModel.onPasswordChange(password)
+            passwordError =
+                getString(context, R.string.min_password_chars_text)
+                    .takeIf { !viewModel.isPasswordValid.value }
+        },
+        label = getString(context, R.string.password_text),
+        visualTransformation = if (showPassword) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        },
+        trailingIcon = {
+            val icon =
+                if (showPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+            IconButton(onClick = { showPassword = !showPassword }) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = if (showPassword) "Ocultar" else "Mostrar",
+                    tint = BlackColor
+                )
+            }
+        },
+        isError = passwordError != null,
+        errorMessage = passwordError
+    )
 }
 
 
@@ -156,7 +220,9 @@ fun CCPTextField(
     label: String,
     modifier: Modifier = Modifier,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    trailingIcon: @Composable (() -> Unit)? = null
+    trailingIcon: @Composable (() -> Unit)? = null,
+    isError: Boolean = false,
+    errorMessage: String? = null
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
@@ -164,15 +230,27 @@ fun CCPTextField(
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
-            color = BlackColor,
+            color = if (isError) {
+                MaterialTheme.colorScheme.error
+            } else {
+                BackgroundColor
+            },
             modifier = Modifier
-                .padding(start = 12.dp, bottom = 4.dp)
+                .padding(bottom = 4.dp)
         )
 
         Box(
             modifier = Modifier
                 .background(BackgroundColor, RoundedCornerShape(12.dp))
-                .border(width = 0.dp, color = Color.Transparent, shape = RoundedCornerShape(12.dp))
+                .border(
+                    width = 0.dp,
+                    color = if (isError) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        Color.Transparent
+                    },
+                    shape = RoundedCornerShape(12.dp)
+                )
                 .padding(horizontal = 12.dp, vertical = 4.dp)
                 .fillMaxWidth()
         ) {
@@ -187,31 +265,30 @@ fun CCPTextField(
                 textStyle = MaterialTheme.typography.bodyMedium.copy(color = BlackColor),
                 decorationBox = { innerTextField ->
                     Row(
+                        modifier.height(36.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(Modifier.weight(1f)) {
                             innerTextField()
                         }
                         Spacer(modifier = Modifier.width(8.dp))
-                        trailingIcon?.let {
-                            it()
+                        Box {
+                            trailingIcon?.let {
+                                it()
+                            }
                         }
                     }
                 }
             )
         }
+
+        if (isError && !errorMessage.isNullOrEmpty()) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+            )
+        }
     }
 }
-
-
-@Composable
-@Preview
-fun PreviewLoginScreen() {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = BackgroundColor
-    ) {
-        LoginScreen()
-    }
-}
-

@@ -1,4 +1,4 @@
-package com.g18.ccp.presentation.ui.auth
+package com.g18.ccp.ui.auth
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

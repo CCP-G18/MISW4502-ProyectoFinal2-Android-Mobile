@@ -10,6 +10,12 @@ activityCompose = "1.10.1"
 composeBom = "2025.03.01"
 navigationCompose = "2.8.9"
 junitJunit = "4.13.2"
+koin = "3.5.3"
+retrofit = "2.9.0"
+securityCrypto = "1.1.0-alpha06"
+datastore = "1.0.0"
+serializationKotlin = "1.6.0"
+gsonVersion = "2.10.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -28,10 +34,19 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-material-icons = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junitJunit" }
-
+core-koin = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
+viewmodel-koin = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
+integration-koin = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serializationKotlin" }
+gson = { group = "com.google.code.gson", name = "gson", version = "gsonVersion" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
+parcelize = { id = "kotlin-parcelize" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

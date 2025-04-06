@@ -1,4 +1,4 @@
-package com.g18.ccp.presentation.ui
+package com.g18.ccp.ui
 
 import android.os.Build
 import android.os.Bundle
@@ -13,15 +13,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.g18.ccp.di.authModule
+import com.g18.ccp.di.coreModule
+import com.g18.ccp.di.networkModule
+import com.g18.ccp.presentation.auth.LoginViewModel
 import com.g18.ccp.presentation.theme.CCPTheme
 import com.g18.ccp.presentation.theme.SecondaryColor
-import com.g18.ccp.presentation.ui.auth.LoginScreen
-import com.g18.ccp.presentation.ui.auth.RegisterScreen
-import com.g18.ccp.presentation.ui.auth.WelcomeScreen
+import com.g18.ccp.ui.auth.LoginScreen
+import com.g18.ccp.ui.auth.RegisterScreen
+import com.g18.ccp.ui.auth.WelcomeScreen
+import com.g18.ccp.ui.home.HomeScreen
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.context.startKoin
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startKoin {
+            androidContext(this@MainActivity)
+            modules(networkModule)
+            modules(authModule)
+            modules(coreModule)
+        }
         enableEdgeToEdge()
         setContent {
             CCPTheme(
@@ -50,10 +64,18 @@ fun AppNavigation() {
             )
         }
         composable("login") {
-            LoginScreen()
+            val viewModel: LoginViewModel = koinViewModel()
+            LoginScreen(
+                viewModel = viewModel,
+                onBackClick = { navController.navigate("welcome") },
+                onLoginSuccess = { navController.navigate("home") }
+            )
         }
         composable("register") {
             RegisterScreen()
+        }
+        composable("home") {
+            HomeScreen()
         }
     }
 }
