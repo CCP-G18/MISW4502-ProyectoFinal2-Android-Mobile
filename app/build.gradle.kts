@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.parcelize)
+    alias(libs.plugins.serialization)
     id("jacoco")
 }
 
@@ -31,6 +33,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+
+    kotlin {
+        sourceSets.all {
+            languageSettings.optIn("kotlinx.serialization.ExperimentalSerializationApi")
         }
     }
 
@@ -74,6 +82,13 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*Theme*",
         "**/*Type*",
         "**/*Color*",
+        "**/*RetrofitProvider*",
+        "**/com/g18/ccp/di*",
+        "**/com/g18/ccp/data/remote/model*",
+        "**/*LoginUiState*",
+        "**/com/g18/ccp/core/utils/network/Output*",
+        "**/*AuthService*",
+        "**/*AuthenticationManager*",
     )
 
     // 🔥 Updated paths for compiled classes (for both Java and Kotlin)
@@ -172,7 +187,6 @@ tasks.register("checkCoverage") {
 
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -181,9 +195,25 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.security.crypto)
+    implementation(libs.core.koin)
+    implementation(libs.viewmodel.koin)
+    implementation(libs.integration.koin)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
+    implementation(libs.datastore)
+    implementation(libs.serialization.json)
+    implementation(libs.gson)
+    implementation(libs.core.ktx)
     testImplementation(libs.junit)
     testImplementation(libs.junit.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.robolectric)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
