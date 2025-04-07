@@ -28,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,30 +45,31 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getString
 import com.g18.ccp.R
-import com.g18.ccp.core.utils.auth.LoginUiState
+import com.g18.ccp.core.utils.auth.UiState
 import com.g18.ccp.core.utils.error.getErrorMessage
 import com.g18.ccp.presentation.auth.LoginViewModel
-import com.g18.ccp.presentation.theme.BackgroundColor
-import com.g18.ccp.presentation.theme.BlackColor
-import com.g18.ccp.presentation.theme.ButtonBackgroundColor
-import com.g18.ccp.presentation.theme.SecondaryColor
+import com.g18.ccp.ui.theme.BackgroundColor
+import com.g18.ccp.ui.theme.BlackColor
+import com.g18.ccp.ui.theme.ButtonBackgroundColor
+import com.g18.ccp.ui.theme.SecondaryColor
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
     onBackClick: () -> Unit = {},
-    onLoginSuccess: () -> Unit = {}
+    onLoginSuccess: () -> Unit = {},
+    onRegisterClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val loginState by viewModel.uiState
 
     LaunchedEffect(loginState) {
         when (loginState) {
-            is LoginUiState.Error -> {
+            is UiState.Error -> {
 
             }
 
-            is LoginUiState.Success -> {
+            is UiState.Success -> {
                 onLoginSuccess()
                 viewModel.resetLoginState()
             }
@@ -117,16 +119,16 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(56.dp))
 
                 when (loginState) {
-                    is LoginUiState.Loading -> CircularProgressIndicator(
+                    is UiState.Loading -> CircularProgressIndicator(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 36.dp)
                             .height(48.dp)
                     )
 
-                    is LoginUiState.Error -> Text(
+                    is UiState.Error -> Text(
                         modifier = Modifier.height(48.dp),
-                        text = (loginState as LoginUiState.Error).exception.getErrorMessage(context),
+                        text = (loginState as UiState.Error).exception.getErrorMessage(context),
                         color = MaterialTheme.colorScheme.error
                     )
 
@@ -147,9 +149,18 @@ fun LoginScreen(
                         containerColor = ButtonBackgroundColor,
                         contentColor = BlackColor
                     ),
-                    enabled = viewModel.dataIsValid() && loginState !is LoginUiState.Loading
+                    enabled = viewModel.dataIsValid() && loginState !is UiState.Loading
                 ) {
                     Text(getString(context, R.string.access_text))
+                }
+                TextButton(
+                    onClick = onRegisterClick
+                ) {
+                    Text(
+                        text = "Registrase",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
         }

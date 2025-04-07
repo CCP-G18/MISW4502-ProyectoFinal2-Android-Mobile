@@ -4,9 +4,8 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.g18.ccp.presentation.theme.CCPTheme
 import com.g18.ccp.ui.auth.WelcomeScreen
-
+import com.g18.ccp.ui.theme.CCPTheme
 import org.junit.Rule
 import org.junit.Test
 

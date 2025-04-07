@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.g18.ccp.core.utils.auth.LoginUiState
+import com.g18.ccp.core.utils.auth.UiState
 import com.g18.ccp.core.utils.network.Output
 import com.g18.ccp.core.utils.validation.Validator
 import com.g18.ccp.repository.auth.LoginRepository
@@ -25,7 +25,7 @@ class LoginViewModel(
     private val _isPasswordValid = mutableStateOf(false)
     val isPasswordValid: State<Boolean> get() = _isPasswordValid
 
-    var uiState = mutableStateOf<LoginUiState>(LoginUiState.Idle)
+    var uiState = mutableStateOf<UiState>(UiState.Idle)
         private set
 
     fun onEmailChange(newEmail: String) {
@@ -45,21 +45,21 @@ class LoginViewModel(
     fun validateAndLogin() {
         viewModelScope.launch {
             if (_isEmailValid.value && _isPasswordValid.value) {
-                uiState.value = LoginUiState.Loading
+                uiState.value = UiState.Loading
                 val result = loginRepository.login(_email.value, _password.value)
                 uiState.value = when (result) {
-                    is Output.Success -> LoginUiState.Success
-                    is Output.Failure<*> -> LoginUiState.Error(
+                    is Output.Success -> UiState.Success
+                    is Output.Failure<*> -> UiState.Error(
                         result.exception as? Exception
                     )
 
-                    is Output.Loading -> LoginUiState.Loading
+                    is Output.Loading -> UiState.Loading
                 }
             }
         }
     }
 
     fun resetLoginState() {
-        uiState.value = LoginUiState.Idle
+        uiState.value = UiState.Idle
     }
 }

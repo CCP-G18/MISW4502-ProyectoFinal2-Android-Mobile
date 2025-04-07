@@ -1,0 +1,8 @@
+<resources>
+    <string-array name="id_types_array">
+        <item>CC</item>
+        <item>CE</item>
+        <item>NIT</item>
+        <item>Pasaporte</item>
+    </string-array>
+</resources>

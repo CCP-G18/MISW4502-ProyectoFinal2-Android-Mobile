@@ -11,7 +11,7 @@ import org.koin.dsl.module
 val coreModule = module {
     single<DataStore<Preferences>> {
         PreferenceDataStoreFactory.create {
-            get<Context>().dataStoreFile("settings")
+            get<Context>().dataStoreFile("settings.preferences_pb")
         }
     }
     single {

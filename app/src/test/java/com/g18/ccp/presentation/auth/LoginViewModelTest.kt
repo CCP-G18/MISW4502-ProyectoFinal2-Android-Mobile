@@ -1,7 +1,7 @@
 package com.g18.ccp.presentation.auth
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.g18.ccp.core.utils.auth.LoginUiState
+import com.g18.ccp.core.utils.auth.UiState
 import com.g18.ccp.core.utils.network.Output
 import com.g18.ccp.repository.auth.LoginRepository
 import io.mockk.coEvery
@@ -75,7 +75,7 @@ class LoginViewModelTest {
         dispatcher.scheduler.advanceUntilIdle()
 
         // Then
-        assertEquals(LoginUiState.Success, viewModel.uiState.value)
+        assertEquals(UiState.Success, viewModel.uiState.value)
         assertTrue(viewModel.dataIsValid())
     }
 
@@ -93,19 +93,19 @@ class LoginViewModelTest {
 
         // Then
         val state = viewModel.uiState.value
-        assertTrue(state is LoginUiState.Error)
-        assertEquals(exception, (state as LoginUiState.Error).exception)
+        assertTrue(state is UiState.Error)
+        assertEquals(exception, (state as UiState.Error).exception)
     }
 
     @Test
     fun givenResetCalled_whenResetLoginState_thenUiStateIsIdle() {
         // Given
-        viewModel.uiState.value = LoginUiState.Success
+        viewModel.uiState.value = UiState.Success
 
         // When
         viewModel.resetLoginState()
 
         // Then
-        assertEquals(LoginUiState.Idle, viewModel.uiState.value)
+        assertEquals(UiState.Idle, viewModel.uiState.value)
     }
 }

@@ -12,4 +12,36 @@
 <!--    Error messages-->
     <string name="login_error_message">Error al iniciar sesión</string>
 
+<!--    Client Register-->
+    <string name="register_title">Registro Cliente</string>
+    <string name="name_label">Nombre</string>
+    <string name="lastname_label">Apellido</string>
+    <string name="id_type_label">Tipo de identificación</string>
+    <string name="id_type_hint">CC/NIT/CE/DNI/PASSPORT</string>
+    <string name="id_number_label">Número de identificación</string>
+    <string name="email_label">Correo</string>
+    <string name="password_label">Contraseña</string>
+    <string name="confirm_password_label">Confirmar Contraseña</string>
+    <string name="register_button">Registrar</string>
+    <string name="country_label">País</string>
+    <string name="city_label">Ciudad</string>
+    <string name="address_label">Dirección</string>
+    <string name="confirm_location_label">Confirmar la ubicación</string>
+
+    <!-- Labels -->
+    <string name="register_client_title">Registro de Cliente</string>
+    <string name="register_button_text">Registrar</string>
+    <string name="last_name_label">Apellido</string>
+
+<!--    Client error register-->
+    <string name="register_error_name">El nombre es obligatorio</string>
+    <string name="register_error_last_name">El apellido es obligatorio</string>
+    <string name="register_error_type_id">El tipo de identificación es obligatorio</string>
+    <string name="register_error_num_id">El número de identificación debe ser válido</string>
+    <string name="register_error_email">Correo inválido</string>
+    <string name="register_error_password">La contraseña no es válida</string>
+    <string name="register_error_confirm_password">Las contraseñas no coinciden</string>
+    <string name="register_error_country">El país es obligatorio</string>
+    <string name="register_error_city">La ciudad es obligatoria</string>
+    <string name="register_error_address">La dirección es obligatoria</string>
 </resources>

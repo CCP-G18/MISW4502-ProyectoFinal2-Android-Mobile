@@ -13,11 +13,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.g18.ccp.presentation.theme.CCPTheme
-import com.g18.ccp.presentation.theme.SecondaryColor
 import com.g18.ccp.presentation.ui.auth.LoginScreen
 import com.g18.ccp.presentation.ui.auth.RegisterScreen
 import com.g18.ccp.presentation.ui.auth.WelcomeScreen
+import com.g18.ccp.ui.theme.CCPTheme
+import com.g18.ccp.ui.theme.SecondaryColor
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
