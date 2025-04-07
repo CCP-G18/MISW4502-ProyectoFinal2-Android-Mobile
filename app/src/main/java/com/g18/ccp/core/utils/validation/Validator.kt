@@ -1,11 +1,10 @@
 package com.g18.ccp.core.utils.validation
 
-import android.util.Patterns
 import com.g18.ccp.core.constants.MIN_PASSWORD_LENGTH
 
 object Validator {
     fun isEmailValid(email: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        return email.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"))
     }
 
     fun isPasswordValid(password: String): Boolean {

@@ -83,6 +83,12 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*Type*",
         "**/*Color*",
         "**/*RetrofitProvider*",
+        "**/com/g18/ccp/di*",
+        "**/com/g18/ccp/data/remote/model*",
+        "**/*LoginUiState*",
+        "**/com/g18/ccp/core/utils/network/Output*",
+        "**/*AuthService*",
+        "**/*AuthenticationManager*",
     )
 
     // 🔥 Updated paths for compiled classes (for both Java and Kotlin)
@@ -200,8 +206,14 @@ dependencies {
     implementation(libs.datastore)
     implementation(libs.serialization.json)
     implementation(libs.gson)
+    implementation(libs.core.ktx)
     testImplementation(libs.junit)
     testImplementation(libs.junit.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.robolectric)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
