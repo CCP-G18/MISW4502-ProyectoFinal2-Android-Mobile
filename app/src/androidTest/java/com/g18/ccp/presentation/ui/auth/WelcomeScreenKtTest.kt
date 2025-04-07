@@ -29,10 +29,7 @@ class WelcomeScreenKtTest {
         composeTestRule.onNodeWithText("CCP").assertIsDisplayed()
         composeTestRule.onNodeWithText("Ingresar").assertIsDisplayed()
 
-        // Click en "Iniciar sesión"
         composeTestRule.onNodeWithText("Ingresar").performClick()
 
-        // Aquí no hay navegación real, pero podrías verificar si el callback se ejecuta.
-        // O si navegas con NavController, se puede testear con Compose Navigation Testing (te explico abajo).
     }
 }

@@ -89,6 +89,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/com/g18/ccp/core/utils/network/Output*",
         "**/*AuthService*",
         "**/*AuthenticationManager*",
+        "**/com/g18/ccp/core/constants*",
     )
 
     // 🔥 Updated paths for compiled classes (for both Java and Kotlin)
