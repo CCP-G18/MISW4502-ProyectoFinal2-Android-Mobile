@@ -49,7 +49,6 @@ class DatasourceTest {
 
     @Test
     fun `given stored value when getString then value is returned`() = runTest {
-        // Primero guardar algo directamente en el datastore
         dataStore.edit { prefs ->
             prefs[stringPreferencesKey(key)] = value
         }
