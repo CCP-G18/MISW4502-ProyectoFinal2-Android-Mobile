@@ -27,13 +27,18 @@
     <string name="city_label">Ciudad</string>
     <string name="address_label">Dirección</string>
     <string name="confirm_location_label">Confirmar la ubicación</string>
+    <string name="register_id_type_cc">CC</string>
+    <string name="register_id_type_nit">NIT</string>
+    <string name="register_id_type_ce">CE</string>
+    <string name="register_id_type_dni">DNI</string>
+    <string name="register_id_type_passport">PASAPORTE</string>
 
     <!-- Labels -->
     <string name="register_client_title">Registro de Cliente</string>
     <string name="register_button_text">Registrar</string>
     <string name="last_name_label">Apellido</string>
 
-<!--    Client error register-->
+    <!--    Client error register-->
     <string name="register_error_name">El nombre es obligatorio</string>
     <string name="register_error_last_name">El apellido es obligatorio</string>
     <string name="register_error_type_id">El tipo de identificación es obligatorio</string>

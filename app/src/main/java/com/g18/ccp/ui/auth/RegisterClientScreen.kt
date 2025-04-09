@@ -1,6 +1,7 @@
 package com.g18.ccp.ui.auth
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +24,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +52,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.g18.ccp.R
+import com.g18.ccp.core.constants.enums.IdentificationType
+import com.g18.ccp.core.constants.enums.getDisplayName
 import com.g18.ccp.core.utils.auth.UiState
 import com.g18.ccp.core.utils.error.getErrorMessage
 import com.g18.ccp.presentation.auth.RegisterClientViewModel
@@ -66,6 +72,9 @@ fun RegisterClientScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val registerState by viewModel.uiState
+    val idTypeEnums = IdentificationType.entries
+
+    val idTypeOptions = idTypeEnums.map { it.getDisplayName(context) }
 
     LaunchedEffect(registerState) {
         when (registerState) {
@@ -158,12 +167,13 @@ fun RegisterClientScreen(
                         viewModel.lastNameError.value,
                         stringResource(R.string.register_error_last_name)
                     )
-                    RegisterTextField(
-                        viewModel.typeId.value,
-                        viewModel::onTypeIdChange,
-                        stringResource(R.string.id_type_label),
-                        viewModel.typeIdError.value,
-                        stringResource(R.string.register_error_type_id)
+                    RegisterDropdownField(
+                        value = viewModel.typeId.value,
+                        onValueChange = viewModel::onTypeIdChange,
+                        label = stringResource(R.string.id_type_label),
+                        isError = viewModel.typeIdError.value,
+                        errorMessage = stringResource(R.string.register_error_type_id),
+                        options = idTypeOptions
                     )
                     RegisterTextField(
                         viewModel.numId.value,
@@ -325,3 +335,93 @@ fun RegisterTextField(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RegisterDropdownField(
+    modifier: Modifier = Modifier,
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    isError: Boolean = false,
+    errorMessage: String? = null,
+    options: List<String>
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Column(modifier = modifier) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = if (isError) MaterialTheme.colorScheme.error else MainColor,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        if (isError) MaterialTheme.colorScheme.error.copy(alpha = 0.1f) else BackgroundColor,
+                        RoundedCornerShape(12.dp)
+                    )
+                    .padding(horizontal = 12.dp, vertical = 4.dp)
+                    .fillMaxWidth()
+                    .menuAnchor()
+                    .clickable { expanded = true } // <-- para abrir el menú
+            ) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(36.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = value.ifEmpty { " " },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = BlackColor,
+                        modifier = Modifier.weight(1f)
+                    )
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                }
+            }
+
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                containerColor = BackgroundColor
+            ) {
+                options.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                selectionOption,
+                                color = MainColor
+                            )
+                        },
+                        onClick = {
+                            onValueChange(selectionOption)
+                            expanded = false
+                        }
+                    )
+                }
+            }
+        }
+
+        if (isError && !errorMessage.isNullOrEmpty()) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+            )
+        }
+    }
+}
+
+
+
+
+
