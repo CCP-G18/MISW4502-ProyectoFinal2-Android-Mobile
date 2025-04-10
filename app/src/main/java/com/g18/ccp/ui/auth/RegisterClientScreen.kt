@@ -19,6 +19,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -48,6 +50,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -75,6 +78,10 @@ fun RegisterClientScreen(
     val idTypeEnums = IdentificationType.entries
 
     val idTypeOptions = idTypeEnums.map { it.getDisplayName(context) }
+
+    var showPassword by remember { mutableStateOf(false) }
+    var showConfirmPassword by remember { mutableStateOf(false) }
+
 
     LaunchedEffect(registerState) {
         when (registerState) {
@@ -191,19 +198,45 @@ fun RegisterClientScreen(
                         stringResource(R.string.register_error_email)
                     )
                     RegisterTextField(
-                        viewModel.password.value,
-                        viewModel::onPasswordChange,
-                        stringResource(R.string.password_label),
-                        viewModel.passwordError.value,
-                        stringResource(R.string.register_error_password)
+                        value = viewModel.password.value,
+                        onValueChange = viewModel::onPasswordChange,
+                        label = stringResource(R.string.password_label),
+                        isError = viewModel.passwordError.value,
+                        errorMessage = stringResource(R.string.register_error_password),
+                        visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val icon =
+                                if (showPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            IconButton(onClick = { showPassword = !showPassword }) {
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = if (showPassword) "Ocultar contraseña" else "Mostrar contraseña",
+                                    tint = BlackColor
+                                )
+                            }
+                        }
                     )
+
                     RegisterTextField(
-                        viewModel.confirmPassword.value,
-                        viewModel::onConfirmPasswordChange,
-                        stringResource(R.string.confirm_password_label),
-                        viewModel.confirmPasswordError.value,
-                        stringResource(R.string.register_error_confirm_password)
+                        value = viewModel.confirmPassword.value,
+                        onValueChange = viewModel::onConfirmPasswordChange,
+                        label = stringResource(R.string.confirm_password_label),
+                        isError = viewModel.confirmPasswordError.value,
+                        errorMessage = stringResource(R.string.register_error_confirm_password),
+                        visualTransformation = if (showConfirmPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val icon =
+                                if (showConfirmPassword) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                            IconButton(onClick = { showConfirmPassword = !showConfirmPassword }) {
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = if (showConfirmPassword) "Ocultar confirmación" else "Mostrar confirmación",
+                                    tint = BlackColor
+                                )
+                            }
+                        }
                     )
+
                     RegisterTextField(
                         viewModel.country.value,
                         viewModel::onCountryChange,
@@ -369,7 +402,6 @@ fun RegisterDropdownField(
                     )
                     .padding(horizontal = 12.dp, vertical = 4.dp)
                     .fillMaxWidth()
-                    .menuAnchor()
                     .clickable { expanded = true } // <-- para abrir el menú
             ) {
                 Row(
