@@ -33,6 +33,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -165,16 +166,19 @@ fun RegisterClientScreen(
                         viewModel::onNameChange,
                         stringResource(R.string.name_label),
                         viewModel.nameError.value,
-                        stringResource(R.string.register_error_name)
+                        stringResource(R.string.register_error_name),
+                        modifier = Modifier.testTag("register_name_field")
                     )
                     RegisterTextField(
                         viewModel.lastName.value,
                         viewModel::onLastNameChange,
                         stringResource(R.string.last_name_label),
                         viewModel.lastNameError.value,
-                        stringResource(R.string.register_error_last_name)
+                        stringResource(R.string.register_error_last_name),
+                        modifier = Modifier.testTag("register_surname_field")
                     )
                     RegisterDropdownField(
+                        modifier = Modifier.testTag("register_id_type_field"),
                         value = viewModel.typeId.value,
                         onValueChange = viewModel::onTypeIdChange,
                         label = stringResource(R.string.id_type_label),
@@ -188,14 +192,16 @@ fun RegisterClientScreen(
                         stringResource(R.string.id_number_label),
                         viewModel.numIdError.value,
                         stringResource(R.string.register_error_num_id),
-                        keyboardType = KeyboardType.Number
+                        keyboardType = KeyboardType.Number,
+                        modifier = Modifier.testTag("register_id_field")
                     )
                     RegisterTextField(
                         viewModel.email.value,
                         viewModel::onEmailChange,
                         stringResource(R.string.email_label),
                         viewModel.emailError.value,
-                        stringResource(R.string.register_error_email)
+                        stringResource(R.string.register_error_email),
+                        modifier = Modifier.testTag("register_email_field")
                     )
                     RegisterTextField(
                         value = viewModel.password.value,
@@ -214,7 +220,8 @@ fun RegisterClientScreen(
                                     tint = BlackColor
                                 )
                             }
-                        }
+                        },
+                        modifier = Modifier.testTag("register_password_field")
                     )
 
                     RegisterTextField(
@@ -234,7 +241,8 @@ fun RegisterClientScreen(
                                     tint = BlackColor
                                 )
                             }
-                        }
+                        },
+                        modifier = Modifier.testTag("register_confirm_password_field")
                     )
 
                     RegisterTextField(
@@ -242,21 +250,24 @@ fun RegisterClientScreen(
                         viewModel::onCountryChange,
                         stringResource(R.string.country_label),
                         viewModel.countryError.value,
-                        stringResource(R.string.register_error_country)
+                        stringResource(R.string.register_error_country),
+                        modifier = Modifier.testTag("register_country_field")
                     )
                     RegisterTextField(
                         viewModel.city.value,
                         viewModel::onCityChange,
                         stringResource(R.string.city_label),
                         viewModel.cityError.value,
-                        stringResource(R.string.register_error_city)
+                        stringResource(R.string.register_error_city),
+                        modifier = Modifier.testTag("register_city_field")
                     )
                     RegisterTextField(
                         viewModel.address.value,
                         viewModel::onAddressChange,
                         stringResource(R.string.address_label),
                         viewModel.addressError.value,
-                        stringResource(R.string.register_error_address)
+                        stringResource(R.string.register_error_address),
+                        modifier = Modifier.testTag("register_address_field")
                     )
                 }
             }
@@ -316,7 +327,7 @@ fun RegisterTextField(
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier) {
+    Column {
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
@@ -339,7 +350,7 @@ fun RegisterTextField(
                 singleLine = true,
                 visualTransformation = visualTransformation,
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxWidth()
                     .onFocusChanged { isFocused = it.isFocused },
                 textStyle = MaterialTheme.typography.bodyMedium.copy(color = BlackColor),
@@ -372,7 +383,7 @@ fun RegisterTextField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterDropdownField(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
@@ -382,7 +393,7 @@ fun RegisterDropdownField(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier) {
+    Column {
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
@@ -392,17 +403,18 @@ fun RegisterDropdownField(
 
         ExposedDropdownMenuBox(
             expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
+            onExpandedChange = { expanded = it }
         ) {
             Box(
-                modifier = Modifier
+                modifier = modifier
                     .background(
                         if (isError) MaterialTheme.colorScheme.error.copy(alpha = 0.1f) else BackgroundColor,
                         RoundedCornerShape(12.dp)
                     )
                     .padding(horizontal = 12.dp, vertical = 4.dp)
                     .fillMaxWidth()
-                    .clickable { expanded = true } // <-- para abrir el menú
+                    .clickable { expanded = true }
+                    .menuAnchor(MenuAnchorType.PrimaryNotEditable)
             ) {
                 Row(
                     Modifier
@@ -421,6 +433,7 @@ fun RegisterDropdownField(
             }
 
             ExposedDropdownMenu(
+                modifier = modifier,
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 containerColor = BackgroundColor

@@ -42,7 +42,7 @@
     <string name="register_error_name">El nombre es obligatorio</string>
     <string name="register_error_last_name">El apellido es obligatorio</string>
     <string name="register_error_type_id">El tipo de identificación es obligatorio</string>
-    <string name="register_error_num_id">El número de identificación debe ser válido</string>
+    <string name="register_error_num_id">Número de identificación inválido</string>
     <string name="register_error_email">Correo inválido</string>
     <string name="register_error_password">La contraseña no es válida</string>
     <string name="register_error_confirm_password">Las contraseñas no coinciden</string>
