@@ -26,7 +26,6 @@
     <string name="country_label">País</string>
     <string name="city_label">Ciudad</string>
     <string name="address_label">Dirección</string>
-    <string name="confirm_location_label">Confirmar la ubicación</string>
     <string name="register_id_type_cc">CC</string>
     <string name="register_id_type_nit">NIT</string>
     <string name="register_id_type_ce">CE</string>
