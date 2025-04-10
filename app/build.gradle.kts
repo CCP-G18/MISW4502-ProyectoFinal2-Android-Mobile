@@ -94,7 +94,6 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*MainApplication*",
     )
 
-    // 🔥 Updated paths for compiled classes (for both Java and Kotlin)
     val javaTree =
         layout.buildDirectory.dir("intermediates/javac/debug/classes").orNull?.asFileTree?.matching {
             exclude(fileFilter)
@@ -116,7 +115,6 @@ tasks.register<JacocoReport>("jacocoTestReport") {
     sourceDirectories.setFrom(files("${project.projectDir}/src/main/java"))
     classDirectories.setFrom(files(javaTree, kotlinTree))
 
-    // 🔥 Corrected execution data path
     executionData.setFrom(
         files(
             layout.buildDirectory.file("jacoco/testDebugUnitTest.exec").get().asFile,
