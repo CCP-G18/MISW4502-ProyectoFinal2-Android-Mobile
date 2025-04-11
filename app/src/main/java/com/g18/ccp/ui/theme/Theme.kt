@@ -1,4 +1,4 @@
-package com.g18.ccp.presentation.theme
+package com.g18.ccp.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -14,7 +14,8 @@ private val DarkColorScheme = darkColorScheme(
     primary = MainColor,
     secondary = SecondaryColor,
     tertiary = BlackColor,
-    background = BackgroundColor
+    background = BackgroundColor,
+    error = ErrorColor
 )
 
 private val LightColorScheme = lightColorScheme(

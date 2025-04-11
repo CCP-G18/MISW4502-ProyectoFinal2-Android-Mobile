@@ -44,18 +44,19 @@ class LoginRepositoryImplTest {
   repository = LoginRepositoryImpl(authService, authManager, datasource)
  }
 
- @Test
- fun `given valid credentials when login then returns success and saves token and user info`() = runTest {
-  // Given
-  val request = LoginRequest("testUser", "123456")
-  val loginData = LoginData(accessToken = fakeToken, user = fakeUser)
-  val response = LoginResponse(
-   code = 200,
-   data = loginData,
-   message = "OK",
-   status = "success"
-  )
-  coEvery { authService.login(request) } returns response
+    @Test
+    fun `given valid credentials when login then returns success and saves token and user info`() =
+        runTest {
+            // Given
+            val request = LoginRequest("testUser", "123456")
+            val loginData = LoginData(accessToken = fakeToken, user = fakeUser)
+            val response = LoginResponse(
+                code = 200,
+                data = loginData,
+                message = "OK",
+                status = "success"
+            )
+            coEvery { authService.login(request) } returns response
 
   // When
   val result = repository.login(request.username, request.password)

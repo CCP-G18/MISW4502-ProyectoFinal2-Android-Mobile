@@ -13,29 +13,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.g18.ccp.di.authModule
-import com.g18.ccp.di.coreModule
-import com.g18.ccp.di.networkModule
 import com.g18.ccp.presentation.auth.LoginViewModel
-import com.g18.ccp.presentation.theme.CCPTheme
-import com.g18.ccp.presentation.theme.SecondaryColor
+import com.g18.ccp.presentation.auth.RegisterClientViewModel
 import com.g18.ccp.ui.auth.LoginScreen
-import com.g18.ccp.ui.auth.RegisterScreen
+import com.g18.ccp.ui.auth.RegisterClientScreen
 import com.g18.ccp.ui.auth.WelcomeScreen
 import com.g18.ccp.ui.home.HomeScreen
-import org.koin.android.ext.koin.androidContext
+import com.g18.ccp.ui.theme.CCPTheme
+import com.g18.ccp.ui.theme.SecondaryColor
 import org.koin.androidx.compose.koinViewModel
-import org.koin.core.context.startKoin
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startKoin {
-            androidContext(this@MainActivity)
-            modules(networkModule)
-            modules(authModule)
-            modules(coreModule)
-        }
         enableEdgeToEdge()
         setContent {
             CCPTheme(
@@ -68,11 +58,17 @@ fun AppNavigation() {
             LoginScreen(
                 viewModel = viewModel,
                 onBackClick = { navController.navigate("welcome") },
-                onLoginSuccess = { navController.navigate("home") }
+                onLoginSuccess = { navController.navigate("home") },
+                onRegisterClick = { navController.navigate("register") },
             )
         }
         composable("register") {
-            RegisterScreen()
+            val viewModel: RegisterClientViewModel = koinViewModel()
+            RegisterClientScreen(
+                viewModel = viewModel,
+                onBackClick = { navController.navigate("welcome") },
+                onRegisterSuccess = { navController.navigate("home") }
+            )
         }
         composable("home") {
             HomeScreen()

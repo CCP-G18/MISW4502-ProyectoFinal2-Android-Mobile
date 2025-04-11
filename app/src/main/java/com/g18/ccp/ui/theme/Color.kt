@@ -1,4 +1,4 @@
-package com.g18.ccp.presentation.theme
+package com.g18.ccp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -14,5 +14,7 @@ val BackgroundColor = Color(0xFFFFFFFF)
 val MainAlertColor = Color(0xFF2ECC71)
 val ButtonBackgroundColor = Color(0xFFE8DDCB)
 val BlackColor = Color(0xFF000000)
+val LightGray = Color(0xFFCED4DA)
+val ErrorColor = Color(0xFFB00020)
 
 

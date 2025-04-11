@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.getString
 import com.g18.ccp.R
-import com.g18.ccp.presentation.theme.BlackColor
-import com.g18.ccp.presentation.theme.ButtonBackgroundColor
+import com.g18.ccp.ui.theme.BlackColor
+import com.g18.ccp.ui.theme.ButtonBackgroundColor
 
 @Composable
 fun WelcomeScreen(onLoginClick: () -> Unit) {

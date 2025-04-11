@@ -4,7 +4,8 @@ import com.g18.ccp.core.constants.MIN_PASSWORD_LENGTH
 
 object Validator {
     fun isEmailValid(email: String): Boolean {
-        return email.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"))
+        return email.matches(Regex("^[A-Za-z0-9](\\.?[A-Za-z0-9_-])*@[A-Za-z0-9-]+(\\.[A-Za-z]{2,})+$"))
+
     }
 
     fun isPasswordValid(password: String): Boolean {

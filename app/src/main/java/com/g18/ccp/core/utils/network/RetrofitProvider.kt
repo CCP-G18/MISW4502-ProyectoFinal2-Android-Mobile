@@ -8,7 +8,7 @@ class RetrofitProvider(
     private val okHttpClient: OkHttpClient
 ) {
     val instance = Retrofit.Builder()
-        .baseUrl("http://34.160.33.188/")
+        .baseUrl("https://proxy-service-947858281009.us-central1.run.app")
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
