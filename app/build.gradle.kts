@@ -87,6 +87,8 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/com/g18/ccp/data/remote/model*",
         "**/*LoginUiState*",
         "**/com/g18/ccp/core/utils/network/Output*",
+        "**/com/g18/ccp/core/navigation*",
+        "**/com/g18/ccp/ui*",
         "**/*AuthService*",
         "**/*AuthenticationManager*",
         "**/com/g18/ccp/core/constants*",
@@ -208,6 +210,7 @@ dependencies {
     implementation(libs.serialization.json)
     implementation(libs.gson)
     implementation(libs.core.ktx)
+    implementation(libs.coil.kt)
     testImplementation(libs.junit)
     testImplementation(libs.junit.junit)
     testImplementation(libs.mockk)

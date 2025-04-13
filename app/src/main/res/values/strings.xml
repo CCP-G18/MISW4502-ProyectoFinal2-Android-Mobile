@@ -48,4 +48,18 @@
     <string name="register_error_country">El país es obligatorio</string>
     <string name="register_error_city">La ciudad es obligatoria</string>
     <string name="register_error_address">La dirección es obligatoria</string>
+    <string name="status_preparing">En Preparación</string>
+    <string name="status_on_route">En ruta</string>
+    <string name="status_delivered">Entregado</string>
+
+    <!-- Screen title -->
+    <string name="orders_title">Pedidos</string>
+    <string name="deliveries_title">Entregas</string>
+
+    <!-- Card text -->
+    <string name="order_delivery_prefix">Entrega</string>
+    <string name="order_total_label">Total</string>
+    <string name="order_status_label">Estado</string>
+
+    <string name="generic_network_error">Parece que hay un problema con la conexión a Internet</string>
 </resources>
