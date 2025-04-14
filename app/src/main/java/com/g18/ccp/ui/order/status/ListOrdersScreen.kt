@@ -32,18 +32,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.g18.ccp.R
+import com.g18.ccp.core.constants.ORDER_DETAIL_ROUTE
 import com.g18.ccp.core.utils.network.Output
 import com.g18.ccp.data.remote.model.order.Order
 import com.g18.ccp.presentation.order.OrdersViewModel
 import com.g18.ccp.ui.theme.LightGray
 import com.g18.ccp.ui.theme.MainColor
 
+const val SELECTED_ORDER_KEY = "selectedOrder"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrdersScreen(viewModel: OrdersViewModel) {
+fun OrdersScreen(viewModel: OrdersViewModel, navController: NavController) {
     val state by viewModel.uiState
 
     LaunchedEffect(Unit) {
@@ -66,7 +70,12 @@ fun OrdersScreen(viewModel: OrdersViewModel) {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(orders) { order ->
-                    OrderCard(order)
+                    OrderCard(order, onClick = {
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            SELECTED_ORDER_KEY, order
+                        )
+                        navController.navigate(ORDER_DETAIL_ROUTE)
+                    })
                 }
             }
         }
@@ -87,8 +96,9 @@ fun OrdersScreen(viewModel: OrdersViewModel) {
 }
 
 @Composable
-fun OrderCard(order: Order) {
+fun OrderCard(order: Order, onClick: () -> Unit) {
     Card(
+        onClick = onClick,
         colors = CardDefaults.cardColors(containerColor = LightGray),
         modifier = Modifier.fillMaxWidth()
     ) {
