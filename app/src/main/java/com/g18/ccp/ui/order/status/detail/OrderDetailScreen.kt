@@ -86,7 +86,7 @@ fun OrderDetailScreen(order: Order) {
                             Text("${item.quantity} Und", fontSize = 16.sp, color = MainColor)
                             Row {
                                 Text(
-                                    "Total",
+                                    stringResource(R.string.order_total_label),
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp,
                                     color = MainColor
@@ -115,7 +115,7 @@ fun OrderDetailScreen(order: Order) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        "Total:",
+                        stringResource(R.string.order_total_label) + ":",
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
                         color = MainColor
@@ -137,7 +137,7 @@ fun OrderDetailScreen(order: Order) {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        "Status",
+                        stringResource(R.string.order_status_label),
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         color = MainColor
