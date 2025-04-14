@@ -22,7 +22,7 @@ fun AppNavigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = WELCOME_ROUTE) {
         composable(WELCOME_ROUTE) {
             WelcomeScreen(
-                onLoginClick = { navController.navigate(ORDERS_ROUTE) },
+                onLoginClick = { navController.navigate(LOGIN_ROUTE) },
             )
         }
         composable(LOGIN_ROUTE) {
@@ -30,7 +30,7 @@ fun AppNavigation(navController: NavHostController) {
             LoginScreen(
                 viewModel = viewModel,
                 onBackClick = { navController.navigate(WELCOME_ROUTE) },
-                onLoginSuccess = { navController.navigate(HOME_ROUTE) },
+                onLoginSuccess = { navController.navigate(ORDERS_ROUTE) },
                 onRegisterClick = { navController.navigate(REGISTER_ROUTE) },
             )
         }
