@@ -21,6 +21,7 @@ securityCrypto = "1.1.0-alpha06"
 datastore = "1.0.0"
 serializationKotlin = "1.6.0"
 coreKtxVersion = "1.6.1"
+coilVersion = "2.4.0"
 
 [libraries]
 androidx-core = { module = "androidx.test:core", version.ref = "core" }
@@ -55,6 +56,7 @@ datastore = { group = "androidx.datastore", name = "datastore-preferences", vers
 serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serializationKotlin" }
 gson = { group = "com.google.code.gson", name = "gson", version = "gsonVersion" }
 core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
+coil-kt = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilVersion" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
