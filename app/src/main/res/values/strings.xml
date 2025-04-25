@@ -11,6 +11,8 @@
 
 <!--    Error messages-->
     <string name="login_error_message">Error al iniciar sesión</string>
+    <string name="list_products_default_error_message">Error al cargar los productos</string>
+    <string name="generic_network_error">Parece que hay un problema con la conexión a Internet</string>
 
 <!--    Client Register-->
     <string name="register_title">Registro Cliente</string>
@@ -61,5 +63,12 @@
     <string name="order_total_label">Total</string>
     <string name="order_status_label">Estado</string>
 
-    <string name="generic_network_error">Parece que hay un problema con la conexión a Internet</string>
+<!--    Products list -->
+    <string name="add_products_cart">Añadir al carrito</string>
+
+<!--    Cart-->
+    <string name="cart_title">Carrito de compras</string>
+    <string name="delete_product">Eliminar</string>
+    <string name="cart_total_label">Total:</string>
+    <string name="cart_create_order_label">Crear Pedido</string>
 </resources>

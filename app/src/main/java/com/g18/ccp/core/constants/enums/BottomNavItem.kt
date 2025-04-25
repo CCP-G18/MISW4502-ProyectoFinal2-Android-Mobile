@@ -25,3 +25,5 @@ enum class BottomNavItem(
             entries.firstOrNull { it.route == route }
     }
 }
+
+fun BottomNavItem.isHome(): Boolean = this == BottomNavItem.HOME
