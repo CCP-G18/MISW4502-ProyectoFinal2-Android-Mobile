@@ -31,7 +31,7 @@ import com.g18.ccp.ui.theme.WhiteColor
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MainWithNavigationBar() {
+fun CustomerNavigationBar() {
     val navController = rememberNavController()
     val navBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = navBackStackEntry?.destination?.route

@@ -6,5 +6,6 @@ sealed class Output<out T> {
     data class Failure<out Exception>(
         val exception: Exception,
         val message: String? = null,
-        val codde: Int? = null) : Output<Nothing>()
+        val code: Int? = null
+    ) : Output<Nothing>()
 }

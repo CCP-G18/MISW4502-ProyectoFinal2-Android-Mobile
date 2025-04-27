@@ -62,4 +62,6 @@ class LoginViewModel(
     fun resetLoginState() {
         uiState.value = UiState.Idle
     }
+
+    suspend fun getUserRole(): String = loginRepository.getUserRole()
 }

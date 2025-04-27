@@ -20,4 +20,10 @@ class Datasource(
         val preferences = dataStore.data.first()
         return preferences[stringPreferencesKey(key)]
     }
+
+    suspend fun remove(key: String) {
+        dataStore.edit {
+            it.remove(stringPreferencesKey(key))
+        }
+    }
 }

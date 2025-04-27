@@ -71,4 +71,16 @@
     <string name="delete_product">Eliminar</string>
     <string name="cart_total_label">Total:</string>
     <string name="cart_create_order_label">Crear Pedido</string>
+
+    <!--    Seller-->
+    <string name="customers_text">Clientes</string>
+    <string name="seller_home">Inicio</string>
+    <string name="seller_visits_route">Ruta de visitas</string>
+    <string name="search_placeholder">Buscar</string>
+    <string name="search_no_results">Sin resultados para la búsqueda</string>
+
+    <string name="no_customers_found">No hay clientes registrados.</string>
+    <string name="error_loading_customers">Error al cargar clientes: %1$s</string>
+    <string name="view_customer_details">Ver detalles del cliente</string>
+
 </resources>

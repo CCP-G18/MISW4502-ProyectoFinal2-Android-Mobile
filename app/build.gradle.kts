@@ -211,6 +211,7 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.core.ktx)
     implementation(libs.coil.kt)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     testImplementation(libs.junit)
     testImplementation(libs.junit.junit)
     testImplementation(libs.mockk)

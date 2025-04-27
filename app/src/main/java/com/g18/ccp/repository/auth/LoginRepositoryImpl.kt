@@ -1,14 +1,12 @@
 package com.g18.ccp.repository.auth
 
-import com.g18.ccp.core.constants.USER_INFO_KEY
+import com.g18.ccp.core.session.UserSessionManager
 import com.g18.ccp.core.utils.auth.AuthenticationManager
 import com.g18.ccp.core.utils.network.Output
 import com.g18.ccp.data.local.Datasource
 import com.g18.ccp.data.remote.model.auth.LoginRequest
 import com.g18.ccp.data.remote.model.auth.UserInfo
 import com.g18.ccp.data.remote.service.auth.AuthService
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class LoginRepositoryImpl(
     private val authService: AuthService,
@@ -25,8 +23,10 @@ class LoginRepositoryImpl(
             Output.Failure(e, e.message)
         }
 
+    override suspend fun getUserRole(): String =
+        UserSessionManager.getUserInfo(datasource)?.role.orEmpty()
+
     private suspend fun saveUserInfo(userInfo: UserInfo) {
-        datasource.putString(USER_INFO_KEY, Json.encodeToString(userInfo))
+        UserSessionManager.saveUserInfo(datasource, userInfo)
     }
 }
-
