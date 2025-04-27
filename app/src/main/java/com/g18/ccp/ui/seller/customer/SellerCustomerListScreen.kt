@@ -38,7 +38,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.g18.ccp.R
+import com.g18.ccp.core.constants.SELLER_CUSTOMER_MANAGEMENT_BASE_ROUTE
 import com.g18.ccp.data.remote.model.seller.CustomerData
 import com.g18.ccp.presentation.seller.customerslist.CustomerListUiState
 import com.g18.ccp.presentation.seller.customerslist.SellerCustomersViewModel
@@ -48,12 +50,12 @@ import com.g18.ccp.ui.theme.ErrorColor
 import com.g18.ccp.ui.theme.LightBeige
 import com.g18.ccp.ui.theme.LightGray
 import com.g18.ccp.ui.theme.MainColor
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SellerCustomerListScreen(
     modifier: Modifier = Modifier,
-    viewModel: SellerCustomersViewModel = koinViewModel()
+    viewModel: SellerCustomersViewModel,
+    navController: NavHostController
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val filteredCustomers by viewModel.filteredCustomers.collectAsStateWithLifecycle()
@@ -129,7 +131,13 @@ fun SellerCustomerListScreen(
                 } else {
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         items(filteredCustomers, key = { it.id }) { customer ->
-                            CustomerCard(customer = customer)
+                            CustomerCard(
+                                customer = customer,
+                                onClick = {
+                                    navController.navigate(
+                                        "$SELLER_CUSTOMER_MANAGEMENT_BASE_ROUTE/${customer.id}"
+                                    )
+                                })
                         }
                     }
                 }
@@ -154,7 +162,10 @@ fun SellerCustomerListScreen(
 }
 
 @Composable
-fun CustomerCard(customer: CustomerData) {
+fun CustomerCard(
+    customer: CustomerData,
+    onClick: () -> Unit
+) {
     Card(
         colors = CardDefaults.cardColors(containerColor = LightBeige),
         modifier = Modifier
@@ -162,6 +173,7 @@ fun CustomerCard(customer: CustomerData) {
             .height(80.dp)
             .padding(8.dp),
         shape = RoundedCornerShape(8.dp),
+        onClick = onClick,
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.parcelize)
     alias(libs.plugins.serialization)
     id("jacoco")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -212,6 +213,9 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.coil.kt)
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     testImplementation(libs.junit.junit)
     testImplementation(libs.mockk)

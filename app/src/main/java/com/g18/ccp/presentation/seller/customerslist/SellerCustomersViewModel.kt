@@ -1,5 +1,6 @@
 package com.g18.ccp.presentation.seller.customerslist
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.g18.ccp.data.remote.model.seller.CustomerData
@@ -8,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -15,6 +17,7 @@ import kotlinx.coroutines.launch
 class SellerCustomersViewModel(
     private val customerRepository: CustomerRepository
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow<CustomerListUiState>(CustomerListUiState.Loading)
     val uiState: StateFlow<CustomerListUiState> = _uiState.asStateFlow()
 
@@ -25,12 +28,21 @@ class SellerCustomersViewModel(
         .combine(searchQuery) { state, query ->
             when (state) {
                 is CustomerListUiState.Success -> {
+                    val customersData = state.customers
                     if (query.isBlank()) {
-                        state.customers
+                        customersData
                     } else {
-                        state.customers.filter { customer ->
-                            customer.name.contains(query, ignoreCase = true) ||
-                                    customer.identificationNumber.contains(query, ignoreCase = true)
+                        customersData.filter { customerData ->
+                            customerData.name.contains(
+                                query,
+                                ignoreCase = true
+                            ) || customerData.identificationNumber.contains(
+                                query,
+                                ignoreCase = true
+                            ) || customerData.address.contains(
+                                query,
+                                ignoreCase = true
+                            )
                         }
                     }
                 }
@@ -44,33 +56,61 @@ class SellerCustomersViewModel(
             initialValue = emptyList()
         )
 
-
     init {
-        fetchCustomers()
+        observeCustomersFromRoom()
+        triggerRefresh(isInitialLoad = true)
     }
 
-    fun fetchCustomers() {
+    private fun observeCustomersFromRoom() {
         viewModelScope.launch {
-            _uiState.value = CustomerListUiState.Loading
-            try {
-                val response = customerRepository.getCustomers()
-                if (response.status.equals("success", ignoreCase = true)) {
-                    _uiState.value = CustomerListUiState.Success(
-                        customers = response.data,
-                        searchQuery = _searchQuery.value
-                    )
-                } else {
-                    val errorMsg = "Error ${response.code}: ${response.message}"
+            Log.d(
+                "SellerCustomersVM",
+                "Starting to observe customers from Room (Flow<CustomerData>)..."
+            )
+            customerRepository.getCustomers()
+                .catch { exception ->
+                    Log.e("SellerCustomersVM", "Error collecting from Room", exception)
                     _uiState.value = CustomerListUiState.Error(
-                        message = errorMsg,
+                        message = "Error DB: ${exception.message}",
                         searchQuery = _searchQuery.value
                     )
                 }
-            } catch (e: Exception) {
+                .collect { customerDataList ->
+                    Log.d(
+                        "SellerCustomersVM",
+                        "Received ${customerDataList.size} CustomerData from Room Flow."
+                    )
+
+                    _uiState.value = CustomerListUiState.Success(
+                        customers = customerDataList,
+                        searchQuery = _searchQuery.value
+                    )
+                }
+        }
+    }
+
+    fun triggerRefresh(isInitialLoad: Boolean = false) {
+        viewModelScope.launch {
+            if (!isInitialLoad && _uiState.value is CustomerListUiState.Success) {
+                Log.d("SellerCustomersVM", "Triggering manual refresh...")
+            } else {
+                _uiState.value = CustomerListUiState.Loading
+                Log.d("SellerCustomersVM", "Triggering initial refresh...")
+            }
+
+            val refreshResult = customerRepository.refreshCustomers()
+
+            if (refreshResult.isFailure) {
+                Log.e(
+                    "SellerCustomersVM",
+                    "Refresh failed: ${refreshResult.exceptionOrNull()?.message}"
+                )
                 _uiState.value = CustomerListUiState.Error(
-                    message = e.message ?: "Error desconocido",
+                    message = "Fallo al refrescar: ${refreshResult.exceptionOrNull()?.message}",
                     searchQuery = _searchQuery.value
                 )
+            } else {
+                Log.d("SellerCustomersVM", "Refresh successful. Room Flow will update the list.")
             }
         }
     }

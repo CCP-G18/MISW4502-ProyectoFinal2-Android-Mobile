@@ -12,7 +12,11 @@ class SellerHomeViewModel(private val userRepository: UserRepository) : ViewMode
     private val _userName = MutableStateFlow<String?>(null)
     val userName: StateFlow<String?> = _userName
 
-    fun loadUserName() {
+    init {
+        loadUserName()
+    }
+
+    private fun loadUserName() {
         viewModelScope.launch {
             val name = userRepository.getUserName()
             _userName.value = name

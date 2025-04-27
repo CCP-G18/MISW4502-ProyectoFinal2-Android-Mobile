@@ -22,6 +22,7 @@ datastore = "1.0.0"
 serializationKotlin = "1.6.0"
 coreKtxVersion = "1.6.1"
 coilVersion = "2.4.0"
+room = "2.6.1"
 
 [libraries]
 androidx-core = { module = "androidx.test:core", version.ref = "core" }
@@ -57,9 +58,13 @@ serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serializ
 gson = { group = "com.google.code.gson", name = "gson", version = "gsonVersion" }
 core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
 coil-kt = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilVersion" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 parcelize = { id = "kotlin-parcelize" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version = "2.0.0-1.0.21" }
