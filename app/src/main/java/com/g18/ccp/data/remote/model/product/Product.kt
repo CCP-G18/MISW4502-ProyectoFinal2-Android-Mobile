@@ -13,5 +13,5 @@ data class Product(
     @SerializedName("unit_amount")
     val price: Float,
     @SerializedName("image_url")
-    val imageUrl: String,
+    val imageUrl: String = "https://back.tiendainval.com/backend/admin/backend/web/archivosDelCliente/items/images/20210108100138no_image_product.png",
 ): Parcelable
