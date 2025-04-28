@@ -8,8 +8,12 @@ import com.g18.ccp.presentation.seller.customermanagement.SellerCustomerManageme
 import com.g18.ccp.presentation.seller.customerslist.SellerCustomersViewModel
 import com.g18.ccp.presentation.seller.home.SellerHomeViewModel
 import com.g18.ccp.presentation.seller.personalinfo.SellerCustomerPersonalInfoViewModel
+import com.g18.ccp.presentation.seller.recommendation.SellerCustomerRecommendationsViewModel
 import com.g18.ccp.repository.seller.CustomerRepository
 import com.g18.ccp.repository.seller.CustomerRepositoryImpl
+import com.g18.ccp.repository.seller.videorecommendation.VideoRepository
+import com.g18.ccp.repository.seller.videorecommendation.VideoRepositoryImpl
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -23,6 +27,7 @@ val sellerModule = module {
             customerDao = get(),
         )
     }
+    single<VideoRepository> { VideoRepositoryImpl(androidContext()) }
     viewModel<SellerHomeViewModel> {
         SellerHomeViewModel(
             userRepository = get(),
@@ -43,6 +48,12 @@ val sellerModule = module {
         SellerCustomerPersonalInfoViewModel(
             savedStateHandle = params.get(),
             customerRepository = get()
+        )
+    }
+    viewModel { params ->
+        SellerCustomerRecommendationsViewModel(
+            savedStateHandle = params.get(),
+            videoRepository = get()
         )
     }
 }

@@ -26,16 +26,19 @@ import com.g18.ccp.core.constants.CUSTOMER_ID_ARG
 import com.g18.ccp.core.constants.SELLER_CUSTOMERS_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_MANAGEMENT_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_PERSONAL_INFO_ROUTE
+import com.g18.ccp.core.constants.SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE
 import com.g18.ccp.core.constants.SELLER_HOME_ROUTE
 import com.g18.ccp.core.constants.enums.SellerBottomNavItem
 import com.g18.ccp.presentation.seller.customermanagement.SellerCustomerManagementViewModel
 import com.g18.ccp.presentation.seller.customerslist.SellerCustomersViewModel
 import com.g18.ccp.presentation.seller.home.SellerHomeViewModel
 import com.g18.ccp.presentation.seller.personalinfo.SellerCustomerPersonalInfoViewModel
+import com.g18.ccp.presentation.seller.recommendation.SellerCustomerRecommendationsViewModel
 import com.g18.ccp.ui.core.CcpTopBar
 import com.g18.ccp.ui.seller.customer.SellerCustomerListScreen
 import com.g18.ccp.ui.seller.customer.management.SellerCustomerManagementScreen
 import com.g18.ccp.ui.seller.customer.personalinfo.SellerCustomerPersonalInfoScreen
+import com.g18.ccp.ui.seller.customer.recommendation.SellerCustomerRecommendationsScreen
 import com.g18.ccp.ui.seller.home.SellerHomeScreen
 import com.g18.ccp.ui.theme.MainColor
 import com.g18.ccp.ui.theme.WhiteColor
@@ -50,13 +53,16 @@ fun SellerNavigationBar(navController: NavHostController = rememberNavController
 
     val showBottomBar = currentRoute == SELLER_CUSTOMERS_ROUTE ||
             currentRoute == SELLER_CUSTOMER_MANAGEMENT_ROUTE ||
-            currentRoute == SELLER_CUSTOMER_PERSONAL_INFO_ROUTE
+            currentRoute == SELLER_CUSTOMER_PERSONAL_INFO_ROUTE ||
+            currentRoute == SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE
 
     val title = when (currentRoute) {
         SELLER_HOME_ROUTE -> stringResource(R.string.seller_home)
         SELLER_CUSTOMERS_ROUTE -> stringResource(R.string.customers_text)
         SELLER_CUSTOMER_MANAGEMENT_ROUTE,
         SELLER_CUSTOMER_PERSONAL_INFO_ROUTE -> stringResource(R.string.customer_detail_title)
+
+        SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE -> stringResource(R.string.recommendations_title)
 
         else -> stringResource(R.string.app_name)
     }
@@ -146,6 +152,15 @@ fun SellerNavigationBar(navController: NavHostController = rememberNavController
             ) { backStackEntry ->
                 val viewModel: SellerCustomerPersonalInfoViewModel = koinViewModel()
                 SellerCustomerPersonalInfoScreen(
+                    viewModel = viewModel
+                )
+            }
+            composable(
+                route = SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE,
+                arguments = listOf(navArgument(CUSTOMER_ID_ARG) { type = NavType.StringType })
+            ) { backStackEntry ->
+                val viewModel: SellerCustomerRecommendationsViewModel = koinViewModel()
+                SellerCustomerRecommendationsScreen(
                     viewModel = viewModel
                 )
             }
