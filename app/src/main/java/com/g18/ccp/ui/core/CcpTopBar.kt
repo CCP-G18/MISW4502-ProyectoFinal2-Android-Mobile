@@ -13,14 +13,18 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
+import com.g18.ccp.ui.theme.BackgroundColor
 import com.g18.ccp.ui.theme.MainColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CcpTopBar(
     title: String,
-    onMenuClick: () -> Unit = {}
+    onMenuClick: () -> Unit = {},
+    actionIcon: ImageVector? = null,
+    onActionClick: (() -> Unit)? = null
 ) {
     TopAppBar(
         title = {
@@ -35,6 +39,17 @@ fun CcpTopBar(
         navigationIcon = {
             IconButton(onClick = onMenuClick) {
                 Icon(Icons.Default.Menu, contentDescription = "Menu", tint = Color.White)
+            }
+        },
+        actions = {
+            actionIcon?.let {
+                IconButton(onClick = onActionClick?: {}) {
+                    Icon(
+                        imageVector = actionIcon,
+                        contentDescription = "action icon",
+                        tint = BackgroundColor
+                    )
+                }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(

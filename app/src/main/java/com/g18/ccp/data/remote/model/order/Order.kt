@@ -17,6 +17,7 @@ data class Order(
 
 @Parcelize
 data class OrderItem(
+    val id: String,
     val title: String,
     val quantity: Int,
     val price: Float,

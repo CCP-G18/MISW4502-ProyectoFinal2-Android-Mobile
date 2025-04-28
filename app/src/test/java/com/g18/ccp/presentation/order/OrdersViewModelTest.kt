@@ -58,6 +58,7 @@ class OrdersViewModelTest {
                     status = OrderStatus.PREPARING,
                     items = listOf(
                         OrderItem(
+                            id = "1",
                             title = "Papas",
                             quantity = 2,
                             price = 3500.0f,

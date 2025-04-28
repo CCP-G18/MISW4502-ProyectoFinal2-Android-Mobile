@@ -37,6 +37,7 @@ class OrdersRepositoryImplTest {
                     status = OrderStatus.DELIVERED,
                     items = listOf(
                         OrderItem(
+                            id = "123",
                             title = "Leche",
                             quantity = 1,
                             price = 3000f,
