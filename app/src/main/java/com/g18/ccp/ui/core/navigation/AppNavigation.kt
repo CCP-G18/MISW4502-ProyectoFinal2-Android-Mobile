@@ -39,7 +39,7 @@ fun AppNavigation(navController: NavHostController) {
             RegisterClientScreen(
                 viewModel = viewModel,
                 onBackClick = { navController.navigate(WELCOME_ROUTE) },
-                onRegisterSuccess = { navController.navigate(HOME_ROUTE) }
+                onRegisterSuccess = { navController.navigate(LOGIN_ROUTE) }
             )
         }
         composable(ORDERS_ROUTE) {
