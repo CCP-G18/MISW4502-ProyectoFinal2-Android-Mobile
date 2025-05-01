@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.g18.ccp.core.constants.HOME_ROUTE
 import com.g18.ccp.core.constants.LOGIN_ROUTE
 import com.g18.ccp.core.constants.ORDERS_ROUTE
 import com.g18.ccp.core.constants.REGISTER_ROUTE
@@ -47,7 +46,7 @@ fun AppNavigation(navController: NavHostController) {
             RegisterClientScreen(
                 viewModel = viewModel,
                 onBackClick = { navController.navigate(WELCOME_ROUTE) },
-                onRegisterSuccess = { navController.navigate(HOME_ROUTE) }
+                onRegisterSuccess = { navController.navigate(LOGIN_ROUTE) }
             )
         }
         composable(ORDERS_ROUTE) {
