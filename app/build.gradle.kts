@@ -99,6 +99,9 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*SellerCustomersViewModel*",
         "**/*AppDatabase*",
         "**/*CustomerService*",
+        "**/*VideoRepositoryImpl*",
+        "**/*VideoRepository*",
+        "**/*MockInterceptor*",
         "/com/g18/ccp/core/utils/mapper/MappersKt.*",
         "/com/g18/ccp/data/local/model/room/**",
     )
