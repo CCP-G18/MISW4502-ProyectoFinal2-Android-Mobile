@@ -6,6 +6,7 @@ import com.g18.ccp.di.coreModule
 import com.g18.ccp.di.networkModule
 import com.g18.ccp.di.orderModule
 import com.g18.ccp.di.productModule
+import com.g18.ccp.di.sellerModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 
@@ -19,6 +20,7 @@ class MainApplication : Application() {
             modules(coreModule)
             modules(orderModule)
             modules(productModule)
+            modules(sellerModule)
         }
     }
 }

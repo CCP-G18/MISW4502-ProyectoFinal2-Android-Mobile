@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.parcelize)
     alias(libs.plugins.serialization)
     id("jacoco")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -95,6 +96,11 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*RegisterClientService*",
         "**/*MainApplication*",
         "**/com/g18/ccp/core/utils/format*",
+        "**/*SellerCustomersViewModel*",
+        "**/*AppDatabase*",
+        "**/*CustomerService*",
+        "/com/g18/ccp/core/utils/mapper/MappersKt.*",
+        "/com/g18/ccp/data/local/model/room/**",
     )
 
     val javaTree =
@@ -212,6 +218,10 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.core.ktx)
     implementation(libs.coil.kt)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     testImplementation(libs.junit.junit)
     testImplementation(libs.mockk)

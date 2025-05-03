@@ -4,4 +4,5 @@ import com.g18.ccp.core.utils.network.Output
 
 interface LoginRepository {
     suspend fun login(email: String, password: String): Output<Unit>
+    suspend fun getUserRole(): String
 }

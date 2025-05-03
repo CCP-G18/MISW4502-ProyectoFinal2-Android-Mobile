@@ -1,0 +1,154 @@
+package com.g18.ccp.ui.core.navigation.seller
+
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.g18.ccp.R
+import com.g18.ccp.core.constants.CUSTOMER_ID_ARG
+import com.g18.ccp.core.constants.SELLER_CUSTOMERS_ROUTE
+import com.g18.ccp.core.constants.SELLER_CUSTOMER_MANAGEMENT_ROUTE
+import com.g18.ccp.core.constants.SELLER_CUSTOMER_PERSONAL_INFO_ROUTE
+import com.g18.ccp.core.constants.SELLER_HOME_ROUTE
+import com.g18.ccp.core.constants.enums.SellerBottomNavItem
+import com.g18.ccp.presentation.seller.customermanagement.SellerCustomerManagementViewModel
+import com.g18.ccp.presentation.seller.customerslist.SellerCustomersViewModel
+import com.g18.ccp.presentation.seller.home.SellerHomeViewModel
+import com.g18.ccp.presentation.seller.personalinfo.SellerCustomerPersonalInfoViewModel
+import com.g18.ccp.ui.core.CcpTopBar
+import com.g18.ccp.ui.seller.customer.SellerCustomerListScreen
+import com.g18.ccp.ui.seller.customer.management.SellerCustomerManagementScreen
+import com.g18.ccp.ui.seller.customer.personalinfo.SellerCustomerPersonalInfoScreen
+import com.g18.ccp.ui.seller.home.SellerHomeScreen
+import com.g18.ccp.ui.theme.MainColor
+import com.g18.ccp.ui.theme.WhiteColor
+import org.koin.androidx.compose.koinViewModel
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SellerNavigationBar(navController: NavHostController = rememberNavController()) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val bottomNavItems = remember { SellerBottomNavItem.entries }
+
+    val showBottomBar = currentRoute == SELLER_CUSTOMERS_ROUTE ||
+            currentRoute == SELLER_CUSTOMER_MANAGEMENT_ROUTE ||
+            currentRoute == SELLER_CUSTOMER_PERSONAL_INFO_ROUTE
+
+    val title = when (currentRoute) {
+        SELLER_HOME_ROUTE -> stringResource(R.string.seller_home)
+        SELLER_CUSTOMERS_ROUTE -> stringResource(R.string.customers_text)
+        SELLER_CUSTOMER_MANAGEMENT_ROUTE,
+        SELLER_CUSTOMER_PERSONAL_INFO_ROUTE -> stringResource(R.string.customer_detail_title)
+
+        else -> stringResource(R.string.app_name)
+    }
+
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            CcpTopBar(
+                title = title,
+            )
+        },
+        bottomBar = {
+            if (showBottomBar) {
+                NavigationBar(containerColor = MainColor) {
+                    bottomNavItems.forEach { item ->
+                        val isSelected = item.route == currentRoute
+                        if (item.activeRoutes.contains(currentRoute)) {
+                            NavigationBarItem(
+                                selected = isSelected,
+                                onClick = {
+                                    navController.navigate(item.route) {
+                                        popUpTo(SellerBottomNavItem.HOME.route)
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                },
+                                icon = {
+                                    Icon(
+                                        item.icon,
+                                        contentDescription = stringResource(item.titleRes),
+                                        tint = WhiteColor
+                                    )
+                                },
+                                label = { Text(stringResource(item.titleRes), color = WhiteColor) },
+                                colors = NavigationBarItemDefaults.colors(
+                                    selectedIconColor = WhiteColor,
+                                    unselectedIconColor = WhiteColor.copy(alpha = 0.6f),
+                                    selectedTextColor = WhiteColor,
+                                    unselectedTextColor = WhiteColor.copy(alpha = 0.6f)
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = SELLER_HOME_ROUTE,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable(SELLER_HOME_ROUTE) {
+                val viewModel: SellerHomeViewModel = koinViewModel()
+                SellerHomeScreen(
+                    onCustomersClick = { navController.navigate(SELLER_CUSTOMERS_ROUTE) },
+                    onRoutesClick = { },
+                    viewModel = viewModel
+                )
+            }
+            composable(SELLER_CUSTOMERS_ROUTE) {
+                val viewModel: SellerCustomersViewModel = koinViewModel()
+                SellerCustomerListScreen(
+                    viewModel = viewModel,
+                    navController = navController,
+                )
+            }
+            composable(
+                route = SELLER_CUSTOMER_MANAGEMENT_ROUTE,
+                arguments = listOf(navArgument(CUSTOMER_ID_ARG) { type = NavType.StringType })
+            ) { backStackEntry ->
+                val customerId = backStackEntry.arguments?.getString(CUSTOMER_ID_ARG)
+                val viewModel: SellerCustomerManagementViewModel = koinViewModel()
+
+                if (customerId != null) {
+                    SellerCustomerManagementScreen(
+                        viewModel = viewModel,
+                        navController = navController
+                    )
+                } else {
+                    Text(stringResource(R.string.customer_id_not_found_error))
+                }
+            }
+            composable(
+                route = SELLER_CUSTOMER_PERSONAL_INFO_ROUTE,
+                arguments = listOf(navArgument(CUSTOMER_ID_ARG) { type = NavType.StringType })
+            ) { backStackEntry ->
+                val viewModel: SellerCustomerPersonalInfoViewModel = koinViewModel()
+                SellerCustomerPersonalInfoScreen(
+                    viewModel = viewModel
+                )
+            }
+        }
+    }
+}

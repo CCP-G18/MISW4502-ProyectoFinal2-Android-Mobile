@@ -5,6 +5,7 @@ import com.g18.ccp.core.utils.auth.AuthenticationManager
 import com.g18.ccp.core.utils.network.RetrofitProvider
 import com.g18.ccp.data.remote.service.auth.AuthService
 import com.g18.ccp.data.remote.service.auth.register.client.RegisterClientService
+//import com.g18.ccp.presentation.seller.home.MockInterceptor
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -18,6 +19,7 @@ val networkModule = module {
     single {
         OkHttpClient.Builder()
             .addInterceptor(get<AuthInterceptor>())
+//            .addInterceptor(MockInterceptor())
             .build()
     }
 

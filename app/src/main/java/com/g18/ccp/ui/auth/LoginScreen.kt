@@ -58,7 +58,7 @@ import com.g18.ccp.ui.theme.SecondaryColor
 fun LoginScreen(
     viewModel: LoginViewModel,
     onBackClick: () -> Unit = {},
-    onLoginSuccess: () -> Unit = {},
+    onLoginSuccess: (String) -> Unit = {},
     onRegisterClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -71,7 +71,7 @@ fun LoginScreen(
             }
 
             is UiState.Success -> {
-                onLoginSuccess()
+                onLoginSuccess(viewModel.getUserRole())
                 viewModel.resetLoginState()
             }
 
