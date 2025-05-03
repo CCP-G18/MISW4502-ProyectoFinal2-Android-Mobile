@@ -94,15 +94,30 @@ class SellerCustomerRecommendationsViewModel(
     fun onCancelPreviewClick() {
         val currentState = _uiState.value
         if (currentState is RecommendationsUiState.Preview) {
+            val uriToDelete = currentState.videoUri
             viewModelScope.launch {
                 Log.d(
                     "ViewModel",
-                    "CancelPreview clicked. Attempting to delete unsaved video: ${currentState.videoUri}"
+                    "CancelPreview clicked. Attempting to delete video: $uriToDelete"
                 )
-                videoRepository.deleteVideo(currentState.videoUri)
+                val deleteResult = videoRepository.deleteVideo(uriToDelete)
+                if (deleteResult.isSuccess) {
+                    Log.i("ViewModel", "Video deleted successfully on cancel.")
+                    _uiState.value = RecommendationsUiState.Idle()
+                } else {
+                    Log.e(
+                        "ViewModel",
+                        "Failed to delete video on cancel",
+                        deleteResult.exceptionOrNull()
+                    )
+                    _uiState.value = currentState.copy(
+                        message = "Error al borrar el vídeo temporal: ${deleteResult.exceptionOrNull()?.message}"
+                    )
+                }
             }
+        } else {
+            _uiState.value = RecommendationsUiState.Idle()
         }
-        _uiState.value = RecommendationsUiState.Idle()
     }
 
 
@@ -126,7 +141,9 @@ class SellerCustomerRecommendationsViewModel(
         Log.d("ViewModel", "Botón 'Recibir Recomendación' pulsado - Sin funcionalidad")
         _uiState.update { currentState ->
             when (currentState) {
-                is RecommendationsUiState.Preview -> currentState.copy(message = "Función 'Recibir Recomendación' no implementada.")
+                is RecommendationsUiState.Preview -> currentState
+                    .copy(message = "Función 'Recibir Recomendación' no implementada.")
+
                 else -> currentState
             }
         }
