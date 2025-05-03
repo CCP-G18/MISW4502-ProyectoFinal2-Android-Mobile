@@ -1,12 +1,12 @@
 package com.g18.ccp.core.session
 
+import com.g18.ccp.core.constants.USER_INFO_KEY
 import com.g18.ccp.data.local.Datasource
 import com.g18.ccp.data.remote.model.auth.UserInfo
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 object UserSessionManager {
-    private const val USER_INFO_KEY = "user_info_key"
 
     suspend fun saveUserInfo(datasource: Datasource, userInfo: UserInfo) {
         val json = Json.encodeToString(userInfo)

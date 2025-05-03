@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -56,4 +57,18 @@ class DatasourceTest {
         val result = datasource.getString(key)
         assertEquals(value, result)
     }
+
+    @Test
+    fun `given no stored value when remove is Called then getString still returns null`() =
+        runTest {
+            val keyToRemove = "non_existent_key_remove"
+
+            val valueBeforeRemove = datasource.getString(keyToRemove)
+            assertNull(valueBeforeRemove)
+
+            datasource.remove(keyToRemove)
+
+            val valueAfterRemove = datasource.getString(keyToRemove)
+            assertNull(valueAfterRemove)
+        }
 }

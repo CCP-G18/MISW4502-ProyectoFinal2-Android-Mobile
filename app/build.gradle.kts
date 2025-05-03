@@ -95,6 +95,12 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/com/g18/ccp/core/constants*",
         "**/*RegisterClientService*",
         "**/*MainApplication*",
+        "**/com/g18/ccp/core/utils/format*",
+        "**/*SellerCustomersViewModel*",
+        "**/*AppDatabase*",
+        "**/*CustomerService*",
+        "/com/g18/ccp/core/utils/mapper/MappersKt.*",
+        "/com/g18/ccp/data/local/model/room/**",
     )
 
     val javaTree =

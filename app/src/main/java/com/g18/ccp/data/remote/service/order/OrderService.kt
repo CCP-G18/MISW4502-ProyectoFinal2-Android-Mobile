@@ -10,6 +10,6 @@ interface OrderService {
     @GET("orders")
     suspend fun getOrders(): List<Order>
 
-    @POST("order")
+    @POST("orders")
     suspend fun createOrder(@Body order: Order): Response<Order>
 }
