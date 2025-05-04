@@ -159,7 +159,7 @@ fun LoginScreen(
                     onClick = onRegisterClick
                 ) {
                     Text(
-                        text = "Registrase",
+                        text = getString(context, R.string.register_client_button_text),
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodyMedium
                     )

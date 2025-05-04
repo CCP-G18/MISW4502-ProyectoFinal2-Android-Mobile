@@ -1,119 +1,120 @@
 <resources>
     <string name="app_name">CCP</string>
-    <string name="entry_title_text">Comercializadora de productos</string>
-    <string name="sign_in_text">Ingresar</string>
-    <string name="email_text">Correo</string>
-    <string name="password_text">Contraseña</string>
-    <string name="access_text">Acceder</string>
-    <string name="invalid_email_text">Correo inválido</string>
-    <string name="invalid_credentials_text">Credenciales inválidas</string>
-    <string name="min_password_chars_text">Debe tener al menos 6 caracteres</string>
+    <string name="entry_title_text">Product Distributor</string>
+    <string name="sign_in_text">Sign In</string>
+    <string name="email_text">Email</string>
+    <string name="password_text">Password</string>
+    <string name="access_text">Access</string>
+    <string name="invalid_email_text">Invalid email</string>
+    <string name="invalid_credentials_text">Invalid credentials</string>
+    <string name="min_password_chars_text">Must be at least 6 characters</string>
 
-    <!--    Error messages-->
-    <string name="login_error_message">Error al iniciar sesión</string>
-    <string name="list_products_default_error_message">Error al cargar los productos</string>
-    <string name="generic_network_error">Parece que hay un problema con la conexión a Internet</string>
-    <string name="customer_id_not_found_error">Error: ID de cliente no encontrado.</string>
-    <string name="customer_name_not_available">Nombre no disponible</string>
-    <string name="customer_not_found">Cliente no encontrado</string>
+    <!-- Error messages -->
+    <string name="login_error_message">Error signing in</string>
+    <string name="list_products_default_error_message">Error loading products</string>
+    <string name="generic_network_error">It seems there is a problem with the Internet connection</string>
+    <string name="customer_id_not_found_error">Error: Customer ID not found.</string>
+    <string name="customer_name_not_available">Name not available</string>
+    <string name="customer_not_found">Customer not found</string>
 
-    <!--    Client Register-->
-    <string name="register_title">Registro Cliente</string>
-    <string name="name_label">Nombre</string>
-    <string name="lastname_label">Apellido</string>
-    <string name="id_type_label">Tipo de identificación</string>
+    <!-- Client Registration -->
+    <string name="register_title">Customer Registration</string>
+    <string name="name_label">First Name</string>
+    <string name="lastname_label">Last Name</string>
+    <string name="id_type_label">Identification Type</string>
     <string name="id_type_hint">CC/NIT/CE/DNI/PASSPORT</string>
-    <string name="id_number_label">Número de identificación</string>
-    <string name="email_label">Correo</string>
-    <string name="password_label">Contraseña</string>
-    <string name="confirm_password_label">Confirmar Contraseña</string>
-    <string name="register_button">Registrar</string>
-    <string name="country_label">País</string>
-    <string name="city_label">Ciudad</string>
-    <string name="address_label">Dirección</string>
+    <string name="id_number_label">Identification Number</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+    <string name="confirm_password_label">Confirm Password</string>
+    <string name="register_button">Register</string>
+    <string name="country_label">Country</string>
+    <string name="city_label">City</string>
+    <string name="address_label">Address</string>
     <string name="register_id_type_cc">CC</string>
     <string name="register_id_type_nit">NIT</string>
     <string name="register_id_type_ce">CE</string>
     <string name="register_id_type_dni">DNI</string>
-    <string name="register_id_type_passport">PASAPORTE</string>
+    <string name="register_id_type_passport">PASSPORT</string>
 
     <!-- Labels -->
-    <string name="register_client_title">Registro de Cliente</string>
-    <string name="register_button_text">Registrar</string>
-    <string name="last_name_label">Apellido</string>
+    <string name="register_client_title">Customer Registration</string>
+    <string name="register_button_text">Register</string>
+    <string name="register_client_button_text">Sign Up</string>
+    <string name="last_name_label">Last Name</string>
 
-    <!--    Client error register-->
-    <string name="register_error_name">El nombre es obligatorio</string>
-    <string name="register_error_last_name">El apellido es obligatorio</string>
-    <string name="register_error_type_id">El tipo de identificación es obligatorio</string>
-    <string name="register_error_num_id">Número de identificación inválido</string>
-    <string name="register_error_email">Correo inválido</string>
-    <string name="register_error_password">La contraseña no es válida</string>
-    <string name="register_error_confirm_password">Las contraseñas no coinciden</string>
-    <string name="register_error_country">El país es obligatorio</string>
-    <string name="register_error_city">La ciudad es obligatoria</string>
-    <string name="register_error_address">La dirección es obligatoria</string>
-    <string name="status_preparing">En Preparación</string>
-    <string name="status_on_route">En ruta</string>
-    <string name="status_delivered">Entregado</string>
+    <!-- Client error register -->
+    <string name="register_error_name">Name is required</string>
+    <string name="register_error_last_name">Last name is required</string>
+    <string name="register_error_type_id">Identification type is required</string>
+    <string name="register_error_num_id">Invalid identification number</string>
+    <string name="register_error_email">Invalid email</string>
+    <string name="register_error_password">Invalid password</string>
+    <string name="register_error_confirm_password">Passwords do not match</string>
+    <string name="register_error_country">Country is required</string>
+    <string name="register_error_city">City is required</string>
+    <string name="register_error_address">Address is required</string>
+    <string name="status_preparing">Preparing</string>
+    <string name="status_on_route">On route</string>
+    <string name="status_delivered">Delivered</string>
 
     <!-- Screen title -->
-    <string name="orders_title">Pedidos</string>
-    <string name="deliveries_title">Entregas</string>
+    <string name="orders_title">Orders</string>
+    <string name="deliveries_title">Deliveries</string>
 
     <!-- Card text -->
-    <string name="order_delivery_prefix">Entrega</string>
+    <string name="order_delivery_prefix">Delivery</string>
     <string name="order_total_label">Total</string>
-    <string name="order_status_label">Estado</string>
+    <string name="order_status_label">Status</string>
 
-    <!--    Products list -->
-    <string name="add_products_cart">Añadir al carrito</string>
+    <!-- Products list -->
+    <string name="add_products_cart">Add to cart</string>
 
-    <!--    Cart-->
-    <string name="cart_title">Carrito de compras</string>
-    <string name="delete_product">Eliminar</string>
+    <!-- Cart -->
+    <string name="cart_title">Shopping Cart</string>
+    <string name="delete_product">Delete</string>
     <string name="cart_total_label">Total:</string>
-    <string name="cart_create_order_label">Crear Pedido</string>
+    <string name="cart_create_order_label">Create Order</string>
 
-    <!--    Seller-->
-    <string name="customers_text">Clientes</string>
-    <string name="seller_home">Inicio</string>
-    <string name="seller_visits_route">Ruta de visitas</string>
-    <string name="search_placeholder">Buscar</string>
-    <string name="search_no_results">Sin resultados para la búsqueda</string>
+    <!-- Seller -->
+    <string name="customers_text">Customers</string>
+    <string name="seller_home">Home</string>
+    <string name="seller_visits_route">Visit Route</string>
+    <string name="search_placeholder">Search</string>
+    <string name="search_no_results">No results found</string>
 
-    <string name="no_customers_found">No hay clientes registrados.</string>
-    <string name="error_loading_customers">Error al cargar clientes: %1$s</string>
-    <string name="view_customer_details">Ver detalles del cliente</string>
+    <string name="no_customers_found">No customers found.</string>
+    <string name="error_loading_customers">Error loading customers: %1$s</string>
+    <string name="view_customer_details">View customer details</string>
 
-    <!--    Customer Management-->
-    <string name="customer_detail_title">Cliente</string>
-    <string name="customer_detail_personal_info">Información Personal</string>
-    <string name="customer_detail_make_order">Hacer Pedido</string>
-    <string name="customer_detail_visits">Visitas</string>
-    <string name="customer_detail_recommendations">Recomendaciones</string>
-    <string name="back_button_desc">Volver</string>
-    <string name="menu_button_desc">Menú</string>
+    <!-- Customer Management -->
+    <string name="customer_detail_title">Customer</string>
+    <string name="customer_detail_personal_info">Personal Information</string>
+    <string name="customer_detail_make_order">Make Order</string>
+    <string name="customer_detail_visits">Visits</string>
+    <string name="customer_detail_recommendations">Recommendations</string>
+    <string name="back_button_desc">Back</string>
+    <string name="menu_button_desc">Menu</string>
 
-    <!--    Personal Info Customer-->
-    <string name="customer_personal_info_title">Información Personal</string>
-    <string name="personal_info_id_type">Tipo de identificación</string>
-    <string name="personal_info_id_number">Identificación</string>
-    <string name="personal_info_email">Correo</string>
-    <string name="personal_info_address">Dirección</string>
-    <string name="personal_info_neighborhood">Barrio</string>
-    <string name="personal_info_city">Ciudad</string>
-    <string name="personal_info_contact">Contacto</string>
+    <!-- Personal Info Customer -->
+    <string name="customer_personal_info_title">Personal Information</string>
+    <string name="personal_info_id_type">Identification Type</string>
+    <string name="personal_info_id_number">Identification</string>
+    <string name="personal_info_email">Email</string>
+    <string name="personal_info_address">Address</string>
+    <string name="personal_info_neighborhood">Neighborhood</string>
+    <string name="personal_info_city">City</string>
+    <string name="personal_info_contact">Contact</string>
     <string name="not_available_short">N/A</string>
 
-    <!--    Recommendation-->
-    <string name="recommendations_title">Recomendaciones</string>
-    <string name="record_video_desc">Grabar vídeo</string>
-    <string name="record_store_prompt">Pulsa para grabar un vídeo de la tienda</string>
-    <string name="video_name_label">Nombre del vídeo</string>
-    <string name="delete">Eliminar</string>
-    <string name="cancel">Cancelar</string>
-    <string name="receive_recommendation">Recibir Recomendación</string>
-    <string name="confirm_delete_title">Confirmar Eliminación</string>
-    <string name="confirm_delete_message">¿Estás seguro de que quieres eliminar este vídeo?</string>
+    <!-- Recommendation -->
+    <string name="recommendations_title">Recommendations</string>
+    <string name="record_video_desc">Record video</string>
+    <string name="record_store_prompt">Tap to record a video of the store</string>
+    <string name="video_name_label">Video name</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="receive_recommendation">Receive Recommendation</string>
+    <string name="confirm_delete_title">Confirm deletion</string>
+    <string name="confirm_delete_message">Are you sure you want to delete this video?</string>
 </resources>
