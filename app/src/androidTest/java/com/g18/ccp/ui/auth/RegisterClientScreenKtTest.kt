@@ -29,7 +29,7 @@ class RegisterClientScreenKtTest {
     @Test
     fun fullRegisterFlow_showsValidationErrors_andRegistersSuccessfully() {
         composeTestRule.onNodeWithText("Ingresar").performClick()
-        composeTestRule.onNodeWithText("Registrase").performClick()
+        composeTestRule.onNodeWithText("Registrarse").performClick()
 
 
         composeTestRule.onNodeWithText("Registrar").performClick()

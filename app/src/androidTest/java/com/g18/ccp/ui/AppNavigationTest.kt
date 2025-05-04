@@ -29,7 +29,7 @@ class AppNavigationTest {
         composeTestRule.onNodeWithText("Ingresar").performClick()
 
         // When
-        composeTestRule.onNodeWithText("Registrase").performClick()
+        composeTestRule.onNodeWithText("Registrarse").performClick()
 
         // Then
         composeTestRule.onNodeWithText("Registro de Cliente").assertIsDisplayed()
@@ -39,7 +39,7 @@ class AppNavigationTest {
     fun givenRegisterScreen_whenNavigateBack_thenGoesToWelcome() {
         // Given
         composeTestRule.onNodeWithText("Ingresar").performClick()
-        composeTestRule.onNodeWithText("Registrase").performClick()
+        composeTestRule.onNodeWithText("Registrarse").performClick()
 
         // When
         composeTestRule.onNodeWithTag("register_back_button").performClick()
