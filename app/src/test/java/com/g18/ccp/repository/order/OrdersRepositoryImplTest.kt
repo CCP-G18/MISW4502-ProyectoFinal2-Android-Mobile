@@ -3,6 +3,7 @@ package com.g18.ccp.repository.order
 import com.g18.ccp.core.constants.enums.OrderStatus
 import com.g18.ccp.data.remote.model.order.Order
 import com.g18.ccp.data.remote.model.order.OrderItem
+import com.g18.ccp.data.remote.model.order.OrdersResponse
 import com.g18.ccp.data.remote.service.order.OrderService
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -28,20 +29,22 @@ class OrdersRepositoryImplTest {
     fun `given service returns order list when getOrders is called then return expected list`() =
         runTest {
             // Given
-            val expectedOrders = listOf(
-                Order(
-                    id = "123",
-                    summary = "Leche, Pan...",
-                    date = "2025-01-01",
-                    total = 150000f,
-                    status = OrderStatus.DELIVERED,
-                    items = listOf(
-                        OrderItem(
-                            id = "123",
-                            title = "Leche",
-                            quantity = 1,
-                            price = 3000f,
-                            imageUrl = "https://example.com/leche.jpg"
+            val expectedOrders = OrdersResponse(
+                code = 200, data = listOf(
+                    Order(
+                        id = "123",
+                        summary = "Leche, Pan...",
+                        date = "2025-01-01",
+                        total = 150000f,
+                        status = OrderStatus.DELIVERED,
+                        items = listOf(
+                            OrderItem(
+                                id = "123",
+                                title = "Leche",
+                                quantity = 1,
+                                price = 3000f,
+                                imageUrl = "https://example.com/leche.jpg"
+                            )
                         )
                     )
                 )
@@ -52,7 +55,7 @@ class OrdersRepositoryImplTest {
             val result = repository.getOrders()
 
             // Then
-            assertEquals(expectedOrders, result)
+            assertEquals(expectedOrders.data, result)
         }
 
     @Test

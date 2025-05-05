@@ -1,5 +1,6 @@
 package com.g18.ccp.repository.auth
 
+import android.util.Log
 import com.g18.ccp.core.session.UserSessionManager
 import com.g18.ccp.core.utils.auth.AuthenticationManager
 import com.g18.ccp.core.utils.network.Output
@@ -7,6 +8,8 @@ import com.g18.ccp.data.local.Datasource
 import com.g18.ccp.data.remote.model.auth.LoginRequest
 import com.g18.ccp.data.remote.model.auth.UserInfo
 import com.g18.ccp.data.remote.service.auth.AuthService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class LoginRepositoryImpl(
     private val authService: AuthService,
@@ -22,6 +25,18 @@ class LoginRepositoryImpl(
         } catch (e: Exception) {
             Output.Failure(e, e.message)
         }
+
+    override suspend fun logout() {
+        withContext(Dispatchers.IO) {
+            try {
+                authenticationManager.clearToken()
+                UserSessionManager.clearSession(datasource)
+                Log.i("LoginRepositoryImpl", "Session data cleared.")
+            } catch (e: Exception) {
+                Log.e("LoginRepositoryImpl", "Error during logout data clearing", e)
+            }
+        }
+    }
 
     override suspend fun getUserRole(): String =
         UserSessionManager.getUserInfo(datasource)?.role.orEmpty()

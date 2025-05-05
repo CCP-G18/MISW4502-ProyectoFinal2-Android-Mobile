@@ -1,6 +1,10 @@
 package com.g18.ccp.ui.core.navigation.seller
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Logout
+import androidx.compose.material.icons.outlined.Map
+import androidx.compose.material.icons.outlined.People
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,24 +33,30 @@ import com.g18.ccp.core.constants.SELLER_CUSTOMER_PERSONAL_INFO_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE
 import com.g18.ccp.core.constants.SELLER_HOME_ROUTE
 import com.g18.ccp.core.constants.enums.SellerBottomNavItem
+import com.g18.ccp.presentation.auth.MainSessionViewModel
 import com.g18.ccp.presentation.seller.customermanagement.SellerCustomerManagementViewModel
 import com.g18.ccp.presentation.seller.customerslist.SellerCustomersViewModel
 import com.g18.ccp.presentation.seller.home.SellerHomeViewModel
 import com.g18.ccp.presentation.seller.personalinfo.SellerCustomerPersonalInfoViewModel
 import com.g18.ccp.presentation.seller.recommendation.SellerCustomerRecommendationsViewModel
 import com.g18.ccp.ui.core.CcpTopBar
+import com.g18.ccp.ui.core.navigation.MenuItemData
 import com.g18.ccp.ui.seller.customer.SellerCustomerListScreen
 import com.g18.ccp.ui.seller.customer.management.SellerCustomerManagementScreen
 import com.g18.ccp.ui.seller.customer.personalinfo.SellerCustomerPersonalInfoScreen
 import com.g18.ccp.ui.seller.customer.recommendation.SellerCustomerRecommendationsScreen
 import com.g18.ccp.ui.seller.home.SellerHomeScreen
-import com.g18.ccp.ui.theme.MainColor
+import com.g18.ccp.ui.theme.SecondaryColor
 import com.g18.ccp.ui.theme.WhiteColor
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SellerNavigationBar(navController: NavHostController = rememberNavController()) {
+fun SellerNavigationBar(
+    outNavController: NavHostController,
+    navController: NavHostController = rememberNavController(),
+    mainSessionViewModel: MainSessionViewModel
+) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val bottomNavItems = remember { SellerBottomNavItem.entries }
@@ -57,7 +67,7 @@ fun SellerNavigationBar(navController: NavHostController = rememberNavController
             currentRoute == SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE
 
     val title = when (currentRoute) {
-        SELLER_HOME_ROUTE -> stringResource(R.string.seller_home)
+        SELLER_HOME_ROUTE -> ""
         SELLER_CUSTOMERS_ROUTE -> stringResource(R.string.customers_text)
         SELLER_CUSTOMER_MANAGEMENT_ROUTE,
         SELLER_CUSTOMER_PERSONAL_INFO_ROUTE -> stringResource(R.string.customer_detail_title)
@@ -67,16 +77,38 @@ fun SellerNavigationBar(navController: NavHostController = rememberNavController
         else -> stringResource(R.string.app_name)
     }
 
+    val menuData = listOf(
+        MenuItemData(
+            icon = Icons.Outlined.Map,
+            title = stringResource(R.string.seller_visits_route),
+            onClick = { }
+        ),
+        MenuItemData(
+            icon = Icons.Outlined.People,
+            title = stringResource(R.string.customers_text),
+            onClick = { navController.navigate(SELLER_CUSTOMERS_ROUTE) }
+        ),
+        MenuItemData(
+            icon = Icons.AutoMirrored.Outlined.Logout,
+            title = stringResource(R.string.sign_out_text),
+            onClick = {
+                mainSessionViewModel.performLogout(outNavController)
+            }
+        ),
+    )
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CcpTopBar(
                 title = title,
+                topBarColor = SecondaryColor,
+                menuData = menuData
             )
         },
         bottomBar = {
             if (showBottomBar) {
-                NavigationBar(containerColor = MainColor) {
+                NavigationBar(containerColor = SecondaryColor) {
                     bottomNavItems.forEach { item ->
                         val isSelected = item.route == currentRoute
                         if (item.activeRoutes.contains(currentRoute)) {

@@ -30,7 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.g18.ccp.R
 import com.g18.ccp.presentation.seller.home.SellerHomeViewModel
-import com.g18.ccp.ui.theme.LightGray
+import com.g18.ccp.ui.theme.BlackColor
+import com.g18.ccp.ui.theme.GrayColor
+import com.g18.ccp.ui.theme.LightBeige
 import com.g18.ccp.ui.theme.MainColor
 
 @Composable
@@ -49,7 +51,6 @@ fun SellerHomeScreen(
     ) {
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Avatar
         Icon(
             painter = painterResource(id = R.drawable.ic_account_icon),
             contentDescription = "Profile Picture",
@@ -73,7 +74,7 @@ fun SellerHomeScreen(
                 .fillMaxWidth()
                 .height(56.dp)
                 .clickable { onRoutesClick() },
-            colors = CardDefaults.cardColors(containerColor = LightGray),
+            colors = CardDefaults.cardColors(containerColor = LightBeige),
             shape = RoundedCornerShape(8.dp)
         ) {
             Row(
@@ -85,13 +86,13 @@ fun SellerHomeScreen(
                 Icon(
                     imageVector = Icons.Outlined.Map,
                     contentDescription = "Ruta de visitas",
-                    tint = MainColor
+                    tint = GrayColor
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = stringResource(R.string.seller_visits_route),
                     fontSize = 16.sp,
-                    color = MainColor
+                    color = BlackColor
                 )
             }
         }
@@ -103,7 +104,7 @@ fun SellerHomeScreen(
                 .fillMaxWidth()
                 .height(56.dp)
                 .clickable { onCustomersClick() },
-            colors = CardDefaults.cardColors(containerColor = LightGray),
+            colors = CardDefaults.cardColors(containerColor = LightBeige),
             shape = RoundedCornerShape(8.dp)
         ) {
             Row(
@@ -115,13 +116,13 @@ fun SellerHomeScreen(
                 Icon(
                     imageVector = Icons.Outlined.Groups,
                     contentDescription = "Clientes",
-                    tint = MainColor
+                    tint = GrayColor
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = stringResource(R.string.customers_text),
                     fontSize = 16.sp,
-                    color = MainColor
+                    color = BlackColor
                 )
             }
         }
