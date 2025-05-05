@@ -10,6 +10,7 @@ import com.g18.ccp.core.constants.REGISTER_ROUTE
 import com.g18.ccp.core.constants.SELLER_HOME_ROUTE
 import com.g18.ccp.core.constants.WELCOME_ROUTE
 import com.g18.ccp.presentation.auth.LoginViewModel
+import com.g18.ccp.presentation.auth.MainSessionViewModel
 import com.g18.ccp.presentation.auth.RegisterClientViewModel
 import com.g18.ccp.ui.auth.LoginScreen
 import com.g18.ccp.ui.auth.RegisterClientScreen
@@ -50,10 +51,15 @@ fun AppNavigation(navController: NavHostController) {
             )
         }
         composable(ORDERS_ROUTE) {
-            CustomerNavigationBar()
+            val viewModel: MainSessionViewModel = koinViewModel()
+            CustomerNavigationBar(viewModel, outNavController = navController)
         }
         composable(SELLER_HOME_ROUTE) {
-            SellerNavigationBar()
+            val viewModel: MainSessionViewModel = koinViewModel()
+            SellerNavigationBar(
+                outNavController = navController,
+                mainSessionViewModel = viewModel
+            )
         }
     }
 }

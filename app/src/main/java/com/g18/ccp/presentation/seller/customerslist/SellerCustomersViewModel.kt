@@ -82,7 +82,7 @@ class SellerCustomersViewModel(
                     )
 
                     _uiState.value = CustomerListUiState.Success(
-                        customers = customerDataList,
+                        customers = customerDataList.sortedBy { it.name.lowercase() },
                         searchQuery = _searchQuery.value
                     )
                 }

@@ -26,7 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +38,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.g18.ccp.R
@@ -52,9 +55,16 @@ import com.g18.ccp.ui.theme.MainColor
 @Composable
 fun ProductListScreen(viewModel: ListProductViewModel, onCartClick: () -> Unit) {
     val state by viewModel.uiState
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
 
-    LaunchedEffect(Unit) {
-        viewModel.loadProducts()
+    DisposableEffect(lifecycle) {
+        val obs = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_START) {
+                viewModel.loadProducts()
+            }
+        }
+        lifecycle.addObserver(obs)
+        onDispose { lifecycle.removeObserver(obs) }
     }
 
     Box(
@@ -72,7 +82,7 @@ fun ProductListScreen(viewModel: ListProductViewModel, onCartClick: () -> Unit) 
             is Output.Success -> {
                 val products = result.data
                 LazyColumn {
-                    items(products) { product ->
+                    items(products.filter { it.product.leftAmount > 0 }) { product ->
                         ProductItem(product, viewModel)
                     }
                 }

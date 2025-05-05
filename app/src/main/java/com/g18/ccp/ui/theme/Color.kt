@@ -16,6 +16,7 @@ val MainAlertColor = Color(0xFF2ECC71)
 val ButtonBackgroundColor = Color(0xFFE8DDCB)
 val BlackColor = Color(0xFF000000)
 val LightGray = Color(0xFFCED4DA)
+val GrayColor = Color(0xFF565656)
 val LightBeige = Color(0xFFEDE7DC)
 val ErrorColor = Color(0xFFB00020)
 

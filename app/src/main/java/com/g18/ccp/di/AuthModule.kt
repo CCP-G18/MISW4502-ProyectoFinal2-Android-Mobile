@@ -1,6 +1,7 @@
 package com.g18.ccp.di
 
 import com.g18.ccp.presentation.auth.LoginViewModel
+import com.g18.ccp.presentation.auth.MainSessionViewModel
 import com.g18.ccp.presentation.auth.RegisterClientViewModel
 import com.g18.ccp.repository.auth.LoginRepository
 import com.g18.ccp.repository.auth.LoginRepositoryImpl
@@ -24,6 +25,9 @@ val authModule = module {
     }
     viewModel {
         LoginViewModel(loginRepository = get())
+    }
+    viewModel {
+        MainSessionViewModel(loginRepository = get())
     }
     viewModel {
         RegisterClientViewModel(

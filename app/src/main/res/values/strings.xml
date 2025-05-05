@@ -2,6 +2,7 @@
     <string name="app_name">CCP</string>
     <string name="entry_title_text">Product Distributor</string>
     <string name="sign_in_text">Sign In</string>
+    <string name="sign_out_text">Sign Out</string>
     <string name="email_text">Email</string>
     <string name="password_text">Password</string>
     <string name="access_text">Access</string>

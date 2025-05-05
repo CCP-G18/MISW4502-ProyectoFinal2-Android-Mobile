@@ -189,7 +189,7 @@ private fun ActionRow(
                 Text(
                     text = text,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Normal,
                     color = BlackColor
                 )
             }

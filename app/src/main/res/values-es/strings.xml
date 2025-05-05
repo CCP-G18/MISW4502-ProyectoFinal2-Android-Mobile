@@ -2,6 +2,7 @@
     <string name="app_name">CCP</string>
     <string name="entry_title_text">Comercializadora de productos</string>
     <string name="sign_in_text">Ingresar</string>
+    <string name="sign_out_text">Desconectarse</string>
     <string name="email_text">Correo</string>
     <string name="password_text">Contraseña</string>
     <string name="access_text">Acceder</string>
