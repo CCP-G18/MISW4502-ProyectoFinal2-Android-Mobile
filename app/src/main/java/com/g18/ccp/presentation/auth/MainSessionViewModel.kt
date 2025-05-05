@@ -15,7 +15,7 @@ class MainSessionViewModel(
 
     fun performLogout(
         navController: NavController,
-        dispatcher: CoroutineDispatcher = Dispatchers.IO
+        dispatcher: CoroutineDispatcher = Dispatchers.Main
     ) {
         viewModelScope.launch(dispatcher) {
             loginRepository.logout()
