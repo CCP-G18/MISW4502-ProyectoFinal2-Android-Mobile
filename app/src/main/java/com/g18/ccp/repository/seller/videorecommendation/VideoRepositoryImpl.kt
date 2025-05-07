@@ -4,13 +4,23 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.core.content.FileProvider
+import com.g18.ccp.core.session.UserSessionManager
+import com.g18.ccp.data.local.Datasource
+import com.g18.ccp.data.remote.model.recommendation.VideoUploadResponse
+import com.g18.ccp.data.remote.service.recommendation.VideoApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 
 class VideoRepositoryImpl(
-    private val applicationContext: Context
+    private val applicationContext: Context,
+    private val datasource: Datasource,
+    private val videoApiService: VideoApiService
 ) : VideoRepository {
 
     override suspend fun deleteVideo(videoUri: Uri): Result<Unit> {
@@ -75,6 +85,53 @@ class VideoRepositoryImpl(
             } catch (e: Exception) {
                 Log.e("VideoRepositoryImpl", "Error saving video file", e)
                 destinationFile.delete()
+                Result.failure(e)
+            }
+        }
+    }
+
+    override suspend fun uploadVideo(
+        videoFileUri: Uri,
+        videoFileName: String,
+        customerId: String
+    ): Result<VideoUploadResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                Log.d("VideoRepositoryImpl", "Preparing to upload video: $videoFileUri")
+                val sellerId = UserSessionManager.getUserInfo(datasource)?.id.orEmpty()
+                val customerIdRequestBody =
+                    customerId.toRequestBody("text/plain".toMediaTypeOrNull())
+                val sellerIdRequestBody = sellerId.toRequestBody("text/plain".toMediaTypeOrNull())
+
+                val videoFilePart = applicationContext.contentResolver.openInputStream(videoFileUri)
+                    ?.use { inputStream ->
+                        val requestFile =
+                            inputStream.readBytes().toRequestBody("video/mp4".toMediaTypeOrNull())
+                        MultipartBody.Part.createFormData("video", videoFileName, requestFile)
+                    }
+                    ?: return@withContext Result.failure(IOException("Could not open input stream for video URI"))
+
+
+                Log.d("VideoRepositoryImpl", "Calling uploadVideoRecommendation API...")
+                val response = videoApiService.uploadVideoRecommendation(
+                    videoFile = videoFilePart,
+                    customerId = customerIdRequestBody,
+                    sellerId = sellerIdRequestBody
+                )
+
+                if (response.isSuccessful && response.body() != null) {
+                    Log.i("VideoRepositoryImpl", "Video upload successful: ${response.body()}")
+                    Result.success(response.body()!!)
+                } else {
+                    val errorBody = response.errorBody()?.string() ?: "Unknown error"
+                    Log.e(
+                        "VideoRepositoryImpl",
+                        "Video upload failed: ${response.code()} - $errorBody"
+                    )
+                    Result.failure(IOException("Upload failed: ${response.code()} - $errorBody"))
+                }
+            } catch (e: Exception) {
+                Log.e("VideoRepositoryImpl", "Exception during video upload", e)
                 Result.failure(e)
             }
         }

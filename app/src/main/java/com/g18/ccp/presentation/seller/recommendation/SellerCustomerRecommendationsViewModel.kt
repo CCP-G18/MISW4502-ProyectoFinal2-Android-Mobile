@@ -138,31 +138,50 @@ class SellerCustomerRecommendationsViewModel(
 
 
     fun onReceiveRecommendationClick() {
-        Log.d("ViewModel", "Botón 'Recibir Recomendación' pulsado - Sin funcionalidad")
-        _uiState.update { currentState ->
-            when (currentState) {
-                is RecommendationsUiState.Preview -> currentState
-                    .copy(message = "Función 'Recibir Recomendación' no implementada.")
+        val currentState = _uiState.value
+        if (currentState is RecommendationsUiState.Preview) {
+            Log.d("ViewModel", "Recibir Recomendación clickeado. Subiendo vídeo...")
+            _uiState.value = currentState.copy(
+                message = "Subiendo vídeo...",
+                showDeleteConfirmDialog = false
+            ) // Indica subida
 
-                else -> currentState
+            viewModelScope.launch {
+                val uploadResult = videoRepository.uploadVideo(
+                    videoFileUri = currentState.videoUri,
+                    videoFileName = currentState.videoName,
+                    customerId = customerId,
+                )
+
+                uploadResult.onSuccess { response ->
+                    Log.i("ViewModel", "Subida exitosa: ${response}")
+                    _uiState.value =
+                        currentState.copy(message = "Recomendación solicitada: ${response}")
+                    // Aquí podrías volver a Idle o a otra pantalla
+                }
+                uploadResult.onFailure { exception ->
+                    Log.e("ViewModel", "Fallo en la subida", exception)
+                    _uiState.value =
+                        currentState.copy(message = "Error al solicitar recomendación: ${exception.message}")
+                }
             }
         }
-    }
 
-    fun onCancelDelete() {
-        _uiState.update { currentState ->
-            when (currentState) {
-                is RecommendationsUiState.Idle -> currentState.copy(showDeleteConfirmDialog = false)
-                is RecommendationsUiState.Preview -> currentState.copy(showDeleteConfirmDialog = false)
+        fun onCancelDelete() {
+            _uiState.update { currentState ->
+                when (currentState) {
+                    is RecommendationsUiState.Idle -> currentState.copy(showDeleteConfirmDialog = false)
+                    is RecommendationsUiState.Preview -> currentState.copy(showDeleteConfirmDialog = false)
+                }
             }
         }
-    }
 
-    fun onDeleteClick() {
-        _uiState.update { currentState ->
-            when (currentState) {
-                is RecommendationsUiState.Idle -> currentState.copy(showDeleteConfirmDialog = true)
-                is RecommendationsUiState.Preview -> currentState.copy(showDeleteConfirmDialog = true)
+        fun onDeleteClick() {
+            _uiState.update { currentState ->
+                when (currentState) {
+                    is RecommendationsUiState.Idle -> currentState.copy(showDeleteConfirmDialog = true)
+                    is RecommendationsUiState.Preview -> currentState.copy(showDeleteConfirmDialog = true)
+                }
             }
         }
     }
