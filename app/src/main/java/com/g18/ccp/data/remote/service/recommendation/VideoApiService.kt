@@ -12,7 +12,7 @@ interface VideoApiService {
     @Multipart
     @POST("recommendations")
     suspend fun uploadVideoRecommendation(
-        @Part("video") videoFile: MultipartBody.Part,
+        @Part video: MultipartBody.Part,
         @Part("customer_id") customerId: RequestBody,
         @Part("seller_id") sellerId: RequestBody,
     ): Response<VideoUploadResponse>

@@ -7,6 +7,7 @@ import com.g18.ccp.core.utils.network.RetrofitProvider
 import com.g18.ccp.data.remote.service.auth.AuthService
 import com.g18.ccp.data.remote.service.auth.register.client.RegisterClientService
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -19,6 +20,9 @@ val networkModule = module {
     single {
         OkHttpClient.Builder()
             .addInterceptor(get<AuthInterceptor>())
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
 //            .addInterceptor(MockInterceptor())
             .build()
     }

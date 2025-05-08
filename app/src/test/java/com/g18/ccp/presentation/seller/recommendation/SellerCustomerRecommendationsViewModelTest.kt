@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.g18.ccp.MainDispatcherRule
 import com.g18.ccp.core.constants.CUSTOMER_ID_ARG
+import com.g18.ccp.data.remote.model.recommendation.VideoUploadData
+import com.g18.ccp.data.remote.model.recommendation.VideoUploadResponse
 import com.g18.ccp.repository.seller.videorecommendation.VideoRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -366,28 +368,129 @@ class SellerCustomerRecommendationsViewModelTest {
         }
 
     @Test
-    fun `when onReceiveRecommendationClick - then Message Is Set In Preview State`() =
+    fun `given Is Preview And Upload Success when onReceiveRecommendationClick then State Is Success Message`() =
         runTest(mainDispatcherRule.testDispatcher) {
+            // given: stub de saveVideo para llegar a Preview
             val expectedName = "video_1.mp4"
             coEvery { videoRepository.saveVideo(mockUri, expectedName) } returns Result.success(
                 mockSavedUri
             )
+
+            // creamos un VideoUploadResponse de ejemplo
+            val uploadData = VideoUploadData(
+                createdAt = "2025-05-07T12:00:00Z",
+                customerId = testCustomerId,
+                id = "upload-123",
+                sellerId = "seller-456",
+                updatedAt = "2025-05-07T12:00:00Z",
+                video = "video_1.mp4"
+            )
+            val fakeResponse = VideoUploadResponse(
+                code = 200,
+                data = uploadData,
+                message = "OK",
+                status = "success"
+            )
+
+            // stub de uploadVideo con éxito
+            coEvery {
+                videoRepository.uploadVideo(
+                    mockSavedUri,
+                    expectedName,
+                    testCustomerId
+                )
+            } returns Result.success(fakeResponse)
+
             createViewModel()
             viewModel.onVideoRecorded(mockUri)
             advanceUntilIdle()
             viewModel.clearMessage()
             advanceUntilIdle()
 
+            // when
             viewModel.onReceiveRecommendationClick()
             advanceUntilIdle()
 
-            val state = viewModel.uiState.value
-            assertTrue(state is RecommendationsUiState.Preview)
+            // then: se invoca al repositorio con los parámetros correctos
+            coVerify(exactly = 1) {
+                videoRepository.uploadVideo(
+                    mockSavedUri,
+                    expectedName,
+                    testCustomerId
+                )
+            }
+            // then: el estado final concatena el VideoUploadResponse
+            val state = viewModel.uiState.value as RecommendationsUiState.Preview
             assertEquals(
-                "Función 'Recibir Recomendación' no implementada.",
-                (state as RecommendationsUiState.Preview).message
+                "Recomendación solicitada: $fakeResponse",
+                state.message
             )
         }
+
+    @Test
+    fun `given Is Preview And Upload Failure when onReceiveRecommendationClick then Is Preview With Error Message`() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            // given: stub de saveVideo para llegar a Preview
+            val expectedName = "video_1.mp4"
+            coEvery { videoRepository.saveVideo(mockUri, expectedName) } returns Result.success(
+                mockSavedUri
+            )
+
+            // stub de uploadVideo que falla
+            val exception = IOException("Network down")
+            coEvery {
+                videoRepository.uploadVideo(
+                    mockSavedUri,
+                    expectedName,
+                    testCustomerId
+                )
+            } returns Result.failure(exception)
+
+            createViewModel()
+            viewModel.onVideoRecorded(mockUri)
+            advanceUntilIdle()
+            viewModel.clearMessage()
+            advanceUntilIdle()
+
+            // when
+            viewModel.onReceiveRecommendationClick()
+            advanceUntilIdle()
+
+            // then: se invoca al repositorio
+            coVerify(exactly = 1) {
+                videoRepository.uploadVideo(
+                    mockSavedUri,
+                    expectedName,
+                    testCustomerId
+                )
+            }
+            // then: el estado final muestra el mensaje de error con exception.message
+            val state = viewModel.uiState.value as RecommendationsUiState.Preview
+            assertEquals(
+                "Error al solicitar recomendación: ${exception.message}",
+                state.message
+            )
+        }
+
+    @Test
+    fun `given State Is Idle - when onReceiveRecommendationClick - then State Remains Idle And Upload Not Called`() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            // given: ViewModel recién creado → Idle
+            createViewModel()
+            val initial = viewModel.uiState.value
+
+            // when
+            viewModel.onReceiveRecommendationClick()
+            advanceUntilIdle()
+
+            // then: no cambia el estado
+            assertEquals(initial, viewModel.uiState.value)
+            // y no se llama a uploadVideo
+            coVerify(exactly = 0) {
+                videoRepository.uploadVideo(any(), any(), any())
+            }
+        }
+
 
     @Test
     fun `when onReceiveRecommendationClick - then State Does Not Change If Not Preview`() =

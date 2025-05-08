@@ -114,7 +114,7 @@ class VideoRepositoryImpl(
 
                 Log.d("VideoRepositoryImpl", "Calling uploadVideoRecommendation API...")
                 val response = videoApiService.uploadVideoRecommendation(
-                    videoFile = videoFilePart,
+                    video = videoFilePart,
                     customerId = customerIdRequestBody,
                     sellerId = sellerIdRequestBody
                 )

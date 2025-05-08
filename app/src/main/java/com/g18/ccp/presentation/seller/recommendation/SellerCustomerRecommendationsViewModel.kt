@@ -157,7 +157,6 @@ class SellerCustomerRecommendationsViewModel(
                     Log.i("ViewModel", "Subida exitosa: ${response}")
                     _uiState.value =
                         currentState.copy(message = "Recomendación solicitada: ${response}")
-                    // Aquí podrías volver a Idle o a otra pantalla
                 }
                 uploadResult.onFailure { exception ->
                     Log.e("ViewModel", "Fallo en la subida", exception)
@@ -166,23 +165,24 @@ class SellerCustomerRecommendationsViewModel(
                 }
             }
         }
+    }
 
-        fun onCancelDelete() {
-            _uiState.update { currentState ->
-                when (currentState) {
-                    is RecommendationsUiState.Idle -> currentState.copy(showDeleteConfirmDialog = false)
-                    is RecommendationsUiState.Preview -> currentState.copy(showDeleteConfirmDialog = false)
-                }
+    fun onCancelDelete() {
+        _uiState.update { currentState ->
+            when (currentState) {
+                is RecommendationsUiState.Idle -> currentState.copy(showDeleteConfirmDialog = false)
+                is RecommendationsUiState.Preview -> currentState.copy(showDeleteConfirmDialog = false)
             }
         }
+    }
 
-        fun onDeleteClick() {
-            _uiState.update { currentState ->
-                when (currentState) {
-                    is RecommendationsUiState.Idle -> currentState.copy(showDeleteConfirmDialog = true)
-                    is RecommendationsUiState.Preview -> currentState.copy(showDeleteConfirmDialog = true)
-                }
+    fun onDeleteClick() {
+        _uiState.update { currentState ->
+            when (currentState) {
+                is RecommendationsUiState.Idle -> currentState.copy(showDeleteConfirmDialog = true)
+                is RecommendationsUiState.Preview -> currentState.copy(showDeleteConfirmDialog = true)
             }
         }
     }
 }
+
