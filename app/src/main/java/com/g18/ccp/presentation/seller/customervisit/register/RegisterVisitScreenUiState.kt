@@ -6,6 +6,7 @@ data class RegisterVisitScreenUiState(
     val observations: String = "",
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val showDatePicker: Boolean = false
+    val showDatePicker: Boolean = false,
+    val visitRegistered: Boolean = false,
 )
 

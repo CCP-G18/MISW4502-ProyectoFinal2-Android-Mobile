@@ -92,14 +92,14 @@ fun SellerRegisterVisitScreen(
     val datePickerState = rememberDatePickerState(
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                val todayUtcMidnightCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                val todayUtcMidnightCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC-5"))
                 val todayUtcMidnightMillis = todayUtcMidnightCalendar.timeInMillis
-                return utcTimeMillis <= todayUtcMidnightMillis
+                return utcTimeMillis == todayUtcMidnightMillis
             }
 
             override fun isSelectableYear(year: Int): Boolean {
                 val currentYearInUtc =
-                    Calendar.getInstance(TimeZone.getTimeZone("UTC")).get(Calendar.YEAR)
+                    Calendar.getInstance(TimeZone.getTimeZone("UTC-5")).get(Calendar.YEAR)
                 return year <= currentYearInUtc
             }
         }
@@ -172,6 +172,14 @@ fun SellerRegisterVisitScreen(
         LaunchedEffect(message) {
             snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Short)
             viewModel.clearErrorMessage()
+        }
+    }
+
+    uiState.visitRegistered.let { visitRegistered ->
+        LaunchedEffect(visitRegistered) {
+            if (visitRegistered) {
+                onVisitCompletedAndNavigateBack()
+            }
         }
     }
 
@@ -264,9 +272,7 @@ fun SellerRegisterVisitScreen(
 
                 Button(
                     onClick = {
-                        viewModel.saveVisit {
-                            onVisitCompletedAndNavigateBack()
-                        }
+                        viewModel.saveVisit()
                     },
                     modifier = Modifier
                         .height(52.dp)

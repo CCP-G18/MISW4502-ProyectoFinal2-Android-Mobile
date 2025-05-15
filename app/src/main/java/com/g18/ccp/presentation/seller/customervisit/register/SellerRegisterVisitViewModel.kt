@@ -25,7 +25,7 @@ import java.util.Calendar
 import java.util.Locale
 
 class SellerRegisterVisitViewModel(
-    private val savedStateHandle: SavedStateHandle, // private val para usarlo en loadInitialData
+    private val savedStateHandle: SavedStateHandle,
     private val visitRepository: VisitRepository,
     private val customerRepository: CustomerRepository
 ) : ViewModel() {
@@ -108,8 +108,7 @@ class SellerRegisterVisitViewModel(
     }
 
     fun saveVisit(
-        dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        onSuccessNavigation: () -> Unit
+        dispatcher: CoroutineDispatcher = Dispatchers.IO
     ) {
         val currentState = _uiState.value
         val dateForBackend = formatDateForBackend(currentState.selectedDate)
@@ -138,10 +137,10 @@ class SellerRegisterVisitViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = null
+                        errorMessage = null,
+                        visitRegistered = true
                     )
                 }
-                onSuccessNavigation()
             }
             result.onFailure { exception ->
                 Log.e("RegisterVisitVM", "Failed to save visit", exception)

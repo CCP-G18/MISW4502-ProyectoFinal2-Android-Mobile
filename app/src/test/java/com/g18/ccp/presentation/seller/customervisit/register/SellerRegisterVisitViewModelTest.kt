@@ -155,13 +155,10 @@ class SellerRegisterVisitViewModelTest {
             viewModel =
                 SellerRegisterVisitViewModel(savedStateHandle, visitRepository, customerRepository)
 
-            // selectedDate inicial es vacío, invalid
-            var navCalled = false
-            viewModel.saveVisit { navCalled = true }
+            viewModel.saveVisit()
 
             // entonces error de formato y no navega
             val state = viewModel.uiState.value
-            assertFalse(navCalled)
             assertEquals("Formato de fecha inválido.", state.errorMessage)
             coVerify(exactly = 0) { visitRepository.registerVisit(any(), any(), any()) }
         }
@@ -184,14 +181,12 @@ class SellerRegisterVisitViewModelTest {
                 every { message } returns "Visita registrada"
             })
 
-            var navCalled = false
-            viewModel.saveVisit(mainDispatcherRule.testDispatcher) { navCalled = true }
+            viewModel.saveVisit(mainDispatcherRule.testDispatcher)
             advanceUntilIdle()
 
             val state = viewModel.uiState.value
             assertFalse(state.isLoading)
             assertNull(state.errorMessage)
-            assertTrue(navCalled)
             coVerify(exactly = 1) { visitRepository.registerVisit("123", "1970-01-01", " ") }
         }
 
@@ -206,7 +201,7 @@ class SellerRegisterVisitViewModelTest {
                 RuntimeException("fail")
             )
 
-            viewModel.saveVisit(mainDispatcherRule.testDispatcher) {}
+            viewModel.saveVisit(mainDispatcherRule.testDispatcher)
             advanceUntilIdle()
 
             val state = viewModel.uiState.value
