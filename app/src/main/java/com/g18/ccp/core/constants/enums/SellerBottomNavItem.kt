@@ -13,7 +13,9 @@ import com.g18.ccp.core.constants.SELLER_CUSTOMER_MANAGEMENT_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_PERSONAL_INFO_BASE_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_PERSONAL_INFO_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE
+import com.g18.ccp.core.constants.SELLER_CUSTOMER_VISITS_ROUTE
 import com.g18.ccp.core.constants.SELLER_HOME_ROUTE
+import com.g18.ccp.core.constants.SELLER_REGISTER_VISIT_ROUTE
 
 enum class SellerBottomNavItem(
     val route: String,
@@ -30,7 +32,9 @@ enum class SellerBottomNavItem(
             SELLER_CUSTOMERS_ROUTE,
             SELLER_CUSTOMER_MANAGEMENT_ROUTE,
             SELLER_CUSTOMER_PERSONAL_INFO_ROUTE,
-            SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE
+            SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE,
+            SELLER_CUSTOMER_VISITS_ROUTE,
+            SELLER_REGISTER_VISIT_ROUTE,
         )
     ),
     CUSTOMERS(
@@ -41,7 +45,8 @@ enum class SellerBottomNavItem(
             SELLER_CUSTOMER_MANAGEMENT_BASE_ROUTE,
             SELLER_CUSTOMER_MANAGEMENT_ROUTE,
             SELLER_CUSTOMER_PERSONAL_INFO_ROUTE,
-            SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE
+            SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE,
+            SELLER_CUSTOMER_VISITS_ROUTE,
         )
     ),
     CUSTOMER(
@@ -51,7 +56,9 @@ enum class SellerBottomNavItem(
         activeRoutes = listOf(
             SELLER_CUSTOMER_PERSONAL_INFO_BASE_ROUTE,
             SELLER_CUSTOMER_PERSONAL_INFO_ROUTE,
-            SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE
+            SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE,
+            SELLER_CUSTOMER_VISITS_ROUTE,
+            SELLER_REGISTER_VISIT_ROUTE,
         )
     );
 }

@@ -13,13 +13,13 @@ import kotlinx.coroutines.launch
 class LoginViewModel(
     private val loginRepository: LoginRepository
 ) : ViewModel() {
-    private val _email = mutableStateOf("")
+    private val _email = mutableStateOf("vendedor.ccp@example.com")
     val email: State<String> get() = _email
 
     private val _isEmailValid = mutableStateOf(false)
     val isEmailValid: State<Boolean> get() = _isEmailValid
 
-    private val _password = mutableStateOf("")
+    private val _password = mutableStateOf("vendedorcpp\$1")
     val password: State<String> get() = _password
 
     private val _isPasswordValid = mutableStateOf(false)
