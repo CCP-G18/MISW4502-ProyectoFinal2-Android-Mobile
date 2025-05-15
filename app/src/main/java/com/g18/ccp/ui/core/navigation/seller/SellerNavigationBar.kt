@@ -31,17 +31,23 @@ import com.g18.ccp.core.constants.SELLER_CUSTOMERS_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_MANAGEMENT_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_PERSONAL_INFO_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE
+import com.g18.ccp.core.constants.SELLER_CUSTOMER_VISITS_ROUTE
 import com.g18.ccp.core.constants.SELLER_HOME_ROUTE
+import com.g18.ccp.core.constants.SELLER_REGISTER_VISIT_BASE_ROUTE
+import com.g18.ccp.core.constants.SELLER_REGISTER_VISIT_ROUTE
 import com.g18.ccp.core.constants.enums.SellerBottomNavItem
 import com.g18.ccp.presentation.auth.MainSessionViewModel
 import com.g18.ccp.presentation.seller.customermanagement.SellerCustomerManagementViewModel
 import com.g18.ccp.presentation.seller.customerslist.SellerCustomersViewModel
+import com.g18.ccp.presentation.seller.customervisit.list.SellerCustomerVisitsViewModel
 import com.g18.ccp.presentation.seller.home.SellerHomeViewModel
 import com.g18.ccp.presentation.seller.personalinfo.SellerCustomerPersonalInfoViewModel
 import com.g18.ccp.presentation.seller.recommendation.SellerCustomerRecommendationsViewModel
 import com.g18.ccp.ui.core.CcpTopBar
 import com.g18.ccp.ui.core.navigation.MenuItemData
 import com.g18.ccp.ui.seller.customer.SellerCustomerListScreen
+import com.g18.ccp.ui.seller.customer.customervisit.list.SellerCustomerVisitsScreen
+import com.g18.ccp.ui.seller.customer.customervisit.register.SellerRegisterVisitScreen
 import com.g18.ccp.ui.seller.customer.management.SellerCustomerManagementScreen
 import com.g18.ccp.ui.seller.customer.personalinfo.SellerCustomerPersonalInfoScreen
 import com.g18.ccp.ui.seller.customer.recommendation.SellerCustomerRecommendationsScreen
@@ -61,10 +67,13 @@ fun SellerNavigationBar(
     val currentRoute = navBackStackEntry?.destination?.route
     val bottomNavItems = remember { SellerBottomNavItem.entries }
 
-    val showBottomBar = currentRoute == SELLER_CUSTOMERS_ROUTE ||
-            currentRoute == SELLER_CUSTOMER_MANAGEMENT_ROUTE ||
-            currentRoute == SELLER_CUSTOMER_PERSONAL_INFO_ROUTE ||
-            currentRoute == SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE
+    val showBottomBar = currentRoute in listOf(
+        SELLER_CUSTOMERS_ROUTE,
+        SELLER_CUSTOMER_MANAGEMENT_ROUTE,
+        SELLER_CUSTOMER_PERSONAL_INFO_ROUTE,
+        SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE,
+        SELLER_CUSTOMER_VISITS_ROUTE,
+    )
 
     val title = when (currentRoute) {
         SELLER_HOME_ROUTE -> ""
@@ -73,6 +82,9 @@ fun SellerNavigationBar(
         SELLER_CUSTOMER_PERSONAL_INFO_ROUTE -> stringResource(R.string.customer_detail_title)
 
         SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE -> stringResource(R.string.recommendations_title)
+
+        SELLER_REGISTER_VISIT_ROUTE,
+        SELLER_CUSTOMER_VISITS_ROUTE -> stringResource(R.string.visits_title)
 
         else -> stringResource(R.string.app_name)
     }
@@ -194,6 +206,30 @@ fun SellerNavigationBar(
                 val viewModel: SellerCustomerRecommendationsViewModel = koinViewModel()
                 SellerCustomerRecommendationsScreen(
                     viewModel = viewModel
+                )
+            }
+            composable(
+                route = SELLER_CUSTOMER_VISITS_ROUTE,
+                arguments = listOf(navArgument(CUSTOMER_ID_ARG) { type = NavType.StringType })
+            ) { backStackEntry ->
+                val viewModel: SellerCustomerVisitsViewModel = koinViewModel()
+                SellerCustomerVisitsScreen(
+                    viewModel = viewModel,
+                    onRegisterVisitClick = {
+                        val customerId = backStackEntry.arguments?.getString(CUSTOMER_ID_ARG)
+                        if (customerId != null)
+                            navController.navigate("$SELLER_REGISTER_VISIT_BASE_ROUTE/$customerId")
+                    }
+                )
+            }
+            composable(
+                route = SELLER_REGISTER_VISIT_ROUTE,
+                arguments = listOf(navArgument(CUSTOMER_ID_ARG) { type = NavType.StringType })
+            ) {
+                SellerRegisterVisitScreen(
+                    onVisitCompletedAndNavigateBack = {
+                        navController.popBackStack()
+                    }
                 )
             }
         }
