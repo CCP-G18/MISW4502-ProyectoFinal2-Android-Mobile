@@ -127,4 +127,5 @@
     <string name="visit_completed_button">Visit Completed</string>
     <string name="delete_visit_content_description">Delete visit</string>
     <string name="back_button">Back</string>
+    <string name="today_text">Today</string>
 </resources>

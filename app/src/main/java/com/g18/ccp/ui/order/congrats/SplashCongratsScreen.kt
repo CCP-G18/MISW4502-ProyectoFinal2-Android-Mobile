@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.g18.ccp.core.constants.ORDERS_ROUTE
+import com.g18.ccp.core.constants.SPLASH_CONGRATS_ROUTE
 import com.g18.ccp.ui.theme.MainAlertColor
 import kotlinx.coroutines.delay
 
@@ -24,7 +25,8 @@ fun SplashCongratsScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         delay(SCREEN_DELAY)
         navController.navigate(ORDERS_ROUTE) {
-            popUpTo(ORDERS_ROUTE) { inclusive = true }
+            popUpTo(SPLASH_CONGRATS_ROUTE) { inclusive = true }
+            launchSingleTop = true
         }
     }
 
