@@ -3,6 +3,7 @@ package com.g18.ccp.di
 import com.g18.ccp.core.utils.network.RetrofitProvider
 import com.g18.ccp.data.remote.service.order.OrderService
 import com.g18.ccp.presentation.order.OrdersViewModel
+import com.g18.ccp.presentation.order.delivery.DeliveryViewModel
 import com.g18.ccp.repository.order.OrdersRepository
 import com.g18.ccp.repository.order.OrdersRepositoryImpl
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -20,6 +21,11 @@ val orderModule = module {
 
     viewModel<OrdersViewModel>{
         OrdersViewModel(
+            repository = get()
+        )
+    }
+    viewModel<DeliveryViewModel> {
+        DeliveryViewModel(
             repository = get()
         )
     }
