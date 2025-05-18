@@ -3,6 +3,7 @@ package com.g18.ccp.di
 import com.g18.ccp.core.utils.network.RetrofitProvider
 import com.g18.ccp.data.local.model.room.dao.CustomerDao
 import com.g18.ccp.data.local.model.room.database.AppDatabase
+import com.g18.ccp.data.remote.service.recommendation.VideoApiService
 import com.g18.ccp.data.remote.service.seller.CustomerService
 import com.g18.ccp.data.remote.service.seller.visits.VisitService
 import com.g18.ccp.presentation.seller.customermanagement.SellerCustomerManagementViewModel
@@ -32,7 +33,14 @@ val sellerModule = module {
             customerDao = get(),
         )
     }
-    single<VideoRepository> { VideoRepositoryImpl(androidContext()) }
+    single<VideoApiService> { get<RetrofitProvider>().instance.create(VideoApiService::class.java) }
+    single<VideoRepository> {
+        VideoRepositoryImpl(
+            applicationContext = androidContext(),
+            datasource = get(),
+            videoApiService = get(),
+        )
+    }
     single<VisitService> { get<RetrofitProvider>().instance.create(VisitService::class.java) }
     single<VisitRepository> { VisitRepositoryImpl(datasource = get(), visitApiService = get()) }
     viewModel<SellerHomeViewModel> {
@@ -75,7 +83,7 @@ val sellerModule = module {
     viewModel { params ->
         SellerCustomerRecommendationsViewModel(
             savedStateHandle = params.get(),
-            videoRepository = get()
+            videoRepository = get(),
         )
     }
 }
