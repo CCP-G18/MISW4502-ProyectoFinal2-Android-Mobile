@@ -33,6 +33,7 @@ import com.g18.ccp.core.constants.SELLER_CUSTOMER_PERSONAL_INFO_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_VISITS_ROUTE
 import com.g18.ccp.core.constants.SELLER_HOME_ROUTE
+import com.g18.ccp.core.constants.SELLER_PRODUCTS_CATEGORIES_ROUTE
 import com.g18.ccp.core.constants.SELLER_REGISTER_VISIT_BASE_ROUTE
 import com.g18.ccp.core.constants.SELLER_REGISTER_VISIT_ROUTE
 import com.g18.ccp.core.constants.enums.SellerBottomNavItem
@@ -41,10 +42,12 @@ import com.g18.ccp.presentation.seller.customermanagement.SellerCustomerManageme
 import com.g18.ccp.presentation.seller.customerslist.SellerCustomersViewModel
 import com.g18.ccp.presentation.seller.customervisit.list.SellerCustomerVisitsViewModel
 import com.g18.ccp.presentation.seller.home.SellerHomeViewModel
+import com.g18.ccp.presentation.seller.order.category.CategoryViewModel
 import com.g18.ccp.presentation.seller.personalinfo.SellerCustomerPersonalInfoViewModel
 import com.g18.ccp.presentation.seller.recommendation.SellerCustomerRecommendationsViewModel
 import com.g18.ccp.ui.core.CcpTopBar
 import com.g18.ccp.ui.core.navigation.MenuItemData
+import com.g18.ccp.ui.order.seller.category.CategoryScreen
 import com.g18.ccp.ui.seller.customer.SellerCustomerListScreen
 import com.g18.ccp.ui.seller.customer.customervisit.list.SellerCustomerVisitsScreen
 import com.g18.ccp.ui.seller.customer.customervisit.register.SellerRegisterVisitScreen
@@ -230,6 +233,16 @@ fun SellerNavigationBar(
                     onVisitCompletedAndNavigateBack = {
                         navController.popBackStack()
                     }
+                )
+            }
+            composable(
+                route = SELLER_PRODUCTS_CATEGORIES_ROUTE,
+                arguments = listOf(navArgument(CUSTOMER_ID_ARG) { type = NavType.StringType })
+            ) {
+                val viewModel: CategoryViewModel = koinViewModel()
+                CategoryScreen(
+                    viewModel,
+                    navController
                 )
             }
         }

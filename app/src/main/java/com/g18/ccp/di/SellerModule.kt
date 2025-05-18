@@ -1,21 +1,26 @@
 package com.g18.ccp.di
 
 import com.g18.ccp.core.utils.network.RetrofitProvider
+import com.g18.ccp.data.local.model.room.dao.CategoryDao
 import com.g18.ccp.data.local.model.room.dao.CustomerDao
 import com.g18.ccp.data.local.model.room.database.AppDatabase
 import com.g18.ccp.data.remote.service.seller.CustomerService
+import com.g18.ccp.data.remote.service.seller.order.category.CategoryService
 import com.g18.ccp.data.remote.service.seller.visits.VisitService
 import com.g18.ccp.presentation.seller.customermanagement.SellerCustomerManagementViewModel
 import com.g18.ccp.presentation.seller.customerslist.SellerCustomersViewModel
 import com.g18.ccp.presentation.seller.customervisit.list.SellerCustomerVisitsViewModel
 import com.g18.ccp.presentation.seller.customervisit.register.SellerRegisterVisitViewModel
 import com.g18.ccp.presentation.seller.home.SellerHomeViewModel
+import com.g18.ccp.presentation.seller.order.category.CategoryViewModel
 import com.g18.ccp.presentation.seller.personalinfo.SellerCustomerPersonalInfoViewModel
 import com.g18.ccp.presentation.seller.recommendation.SellerCustomerRecommendationsViewModel
 import com.g18.ccp.repository.seller.CustomerRepository
 import com.g18.ccp.repository.seller.CustomerRepositoryImpl
 import com.g18.ccp.repository.seller.customervisit.VisitRepository
 import com.g18.ccp.repository.seller.customervisit.VisitRepositoryImpl
+import com.g18.ccp.repository.seller.order.category.SellerProductRepository
+import com.g18.ccp.repository.seller.order.category.SellerProductRepositoryImpl
 import com.g18.ccp.repository.seller.videorecommendation.VideoRepository
 import com.g18.ccp.repository.seller.videorecommendation.VideoRepositoryImpl
 import org.koin.android.ext.koin.androidContext
@@ -26,6 +31,9 @@ val sellerModule = module {
     single<CustomerService> { get<RetrofitProvider>().instance.create(CustomerService::class.java) }
     single<CustomerDao> { get<AppDatabase>().customerDao() }
 
+    single<CategoryService> { get<RetrofitProvider>().instance.create(CategoryService::class.java) }
+    single<CategoryDao> { get<AppDatabase>().categoryDao() }
+
     single<CustomerRepository> {
         CustomerRepositoryImpl(
             customerService = get(),
@@ -35,6 +43,12 @@ val sellerModule = module {
     single<VideoRepository> { VideoRepositoryImpl(androidContext()) }
     single<VisitService> { get<RetrofitProvider>().instance.create(VisitService::class.java) }
     single<VisitRepository> { VisitRepositoryImpl(datasource = get(), visitApiService = get()) }
+    single<SellerProductRepository> {
+        SellerProductRepositoryImpl(
+            categoryService = get(),
+            categoryDao = get(),
+        )
+    }
     viewModel<SellerHomeViewModel> {
         SellerHomeViewModel(
             userRepository = get(),
@@ -76,6 +90,11 @@ val sellerModule = module {
         SellerCustomerRecommendationsViewModel(
             savedStateHandle = params.get(),
             videoRepository = get()
+        )
+    }
+    viewModel {
+        CategoryViewModel(
+            categoryRepository = get(),
         )
     }
 }

@@ -1,9 +1,9 @@
 package com.g18.ccp.repository.seller
 
 import android.util.Log
-import com.g18.ccp.core.utils.mapper.toDomainModel
-import com.g18.ccp.core.utils.mapper.toDomainModelList
-import com.g18.ccp.core.utils.mapper.toEntityList
+import com.g18.ccp.core.utils.mapper.toCustomerEntityList
+import com.g18.ccp.core.utils.mapper.toDomainCustomerModel
+import com.g18.ccp.core.utils.mapper.toDomainCustomerModelList
 import com.g18.ccp.data.local.model.room.dao.CustomerDao
 import com.g18.ccp.data.remote.model.seller.CustomerData
 import com.g18.ccp.data.remote.service.seller.CustomerService
@@ -25,7 +25,7 @@ class CustomerRepositoryImpl(
                     "CustomerRepositoryImpl",
                     "Room emitted ${entities.size} customers. Mapping to Domain."
                 )
-                entities.toDomainModelList()
+                entities.toDomainCustomerModelList()
             }
     }
 
@@ -39,7 +39,7 @@ class CustomerRepositoryImpl(
                 "CustomerRepositoryImpl",
                 "Room emitted customer for ID $customerId. Exists: ${entity != null}. Mapping to Domain."
             )
-            entity?.toDomainModel()
+            entity?.toDomainCustomerModel()
         }
     }
 
@@ -50,7 +50,7 @@ class CustomerRepositoryImpl(
                 val response = customerService.getCustomers()
 
                 if (response.status.equals("success", ignoreCase = true)) {
-                    val entitiesToSave = response.data.toEntityList()
+                    val entitiesToSave = response.data.toCustomerEntityList()
                     Log.d(
                         "CustomerRepositoryImpl",
                         "Network success. Mapping ${entitiesToSave.size} entities for Room."
