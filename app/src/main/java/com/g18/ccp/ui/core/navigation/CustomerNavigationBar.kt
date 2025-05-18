@@ -24,9 +24,11 @@ import com.g18.ccp.data.remote.model.order.Order
 import com.g18.ccp.presentation.auth.MainSessionViewModel
 import com.g18.ccp.presentation.order.OrdersViewModel
 import com.g18.ccp.presentation.order.create.ListProductViewModel
+import com.g18.ccp.presentation.order.delivery.DeliveryViewModel
 import com.g18.ccp.ui.core.CcpTopBar
 import com.g18.ccp.ui.order.cart.CartScreen
 import com.g18.ccp.ui.order.congrats.SplashCongratsScreen
+import com.g18.ccp.ui.order.delivery.ProgrammedDeliveriesScreen
 import com.g18.ccp.ui.order.status.OrdersScreen
 import com.g18.ccp.ui.order.status.SELECTED_ORDER_KEY
 import com.g18.ccp.ui.order.status.detail.OrderDetailScreen
@@ -109,7 +111,8 @@ fun CustomerNavigationBar(
                 OrdersScreen(viewModel, navController)
             }
             composable(BottomNavItem.DELIVERIES.route) {
-//                DeliveryScreen()
+                val viewModel: DeliveryViewModel = koinViewModel()
+                ProgrammedDeliveriesScreen(viewModel, navController)
             }
         }
     }

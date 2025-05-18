@@ -118,4 +118,14 @@
     <string name="receive_recommendation">Receive Recommendation</string>
     <string name="confirm_delete_title">Confirm deletion</string>
     <string name="confirm_delete_message">Are you sure you want to delete this video?</string>
+
+    <string name="visits_title">Visits</string>
+    <string name="register_visit_button">Register Visit</string>
+    <string name="no_visits_yet">No visits registered for this customer yet.</string>
+    <string name="visit_date_label">Visit Date</string>
+    <string name="visit_observations_label">Observations</string>
+    <string name="visit_completed_button">Visit Completed</string>
+    <string name="delete_visit_content_description">Delete visit</string>
+    <string name="back_button">Back</string>
+    <string name="today_text">Today</string>
 </resources>

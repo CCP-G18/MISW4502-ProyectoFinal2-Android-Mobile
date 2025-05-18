@@ -41,6 +41,7 @@ import androidx.navigation.NavHostController
 import com.g18.ccp.R
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_PERSONAL_INFO_BASE_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_RECOMMENDATIONS_BASE_ROUTE
+import com.g18.ccp.core.constants.SELLER_CUSTOMER_VISITS_BASE_ROUTE
 import com.g18.ccp.presentation.seller.customermanagement.CustomerManagementUiState
 import com.g18.ccp.presentation.seller.customermanagement.SellerCustomerManagementViewModel
 import com.g18.ccp.ui.theme.BackgroundColor
@@ -114,7 +115,11 @@ fun SellerCustomerManagementScreen(
                 ActionRow(
                     icon = Icons.Outlined.CalendarToday,
                     text = stringResource(R.string.customer_detail_visits),
-                    onClick = { /* TODO: */ }
+                    onClick = {
+                        navController.navigate(
+                            "$SELLER_CUSTOMER_VISITS_BASE_ROUTE/${customerData.id}"
+                        )
+                    }
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 ActionRow(
