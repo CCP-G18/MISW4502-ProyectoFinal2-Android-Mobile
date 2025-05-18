@@ -18,7 +18,7 @@ sealed interface RecommendationsUiState {
 
     data object Loading: RecommendationsUiState
 
-    data class Success(
+    data class LoadRecommendations(
         val recommendations: List<RecommendationDisplayItem>
     ): RecommendationsUiState
 

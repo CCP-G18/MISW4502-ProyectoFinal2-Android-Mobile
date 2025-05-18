@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,15 +20,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -54,23 +61,32 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.g18.ccp.R
+import com.g18.ccp.presentation.seller.recommendation.RecommendationDisplayItem
 import com.g18.ccp.presentation.seller.recommendation.RecommendationsUiState
 import com.g18.ccp.presentation.seller.recommendation.SellerCustomerRecommendationsViewModel
 import com.g18.ccp.ui.theme.BackgroundColor
 import com.g18.ccp.ui.theme.BlackColor
 import com.g18.ccp.ui.theme.ErrorColor
+import com.g18.ccp.ui.theme.LightBeige
 import com.g18.ccp.ui.theme.MainColor
 import com.g18.ccp.ui.theme.WhiteColor
+import org.koin.androidx.compose.koinViewModel
 import java.io.File
 
 @Composable
 fun SellerCustomerRecommendationsScreen(
     modifier: Modifier = Modifier,
-    viewModel: SellerCustomerRecommendationsViewModel
+    viewModel: SellerCustomerRecommendationsViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        if (uiState is RecommendationsUiState.Idle) {
+            viewModel.loadInitialData()
+        }
+    }
 
     var videoUriToSave by remember { mutableStateOf<Uri?>(null) }
 
@@ -121,11 +137,11 @@ fun SellerCustomerRecommendationsScreen(
         val message = when (val state = uiState) {
             is RecommendationsUiState.Idle -> state.message
             is RecommendationsUiState.Preview -> state.message
-            RecommendationsUiState.Loading -> TODO()
-            is RecommendationsUiState.Success -> TODO()
+            is RecommendationsUiState.Loading -> Unit
+            is RecommendationsUiState.LoadRecommendations -> "Recomendaciones encontradas correctamente"
         }
         if (message != null) {
-            snackbarHostState.showSnackbar(message = message, duration = SnackbarDuration.Short)
+            snackbarHostState.showSnackbar(message = message.toString(), duration = SnackbarDuration.Short)
             viewModel.clearMessage()
         }
     }
@@ -133,10 +149,10 @@ fun SellerCustomerRecommendationsScreen(
     val showDialog = when (val state = uiState) {
         is RecommendationsUiState.Idle -> state.showDeleteConfirmDialog
         is RecommendationsUiState.Preview -> state.showDeleteConfirmDialog
-        RecommendationsUiState.Loading -> TODO()
-        is RecommendationsUiState.Success -> TODO()
-    }
-    if (showDialog) {
+        RecommendationsUiState.Loading -> false
+        is RecommendationsUiState.LoadRecommendations -> false
+    } ?: false
+    if (showDialog as Boolean) {
         AlertDialog(
             onDismissRequest = { viewModel.onCancelDelete() },
             title = { Text(stringResource(R.string.confirm_delete_title)) },
@@ -161,14 +177,11 @@ fun SellerCustomerRecommendationsScreen(
 
 
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
-        Column(
+        Box(
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .background(BackgroundColor)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (val state = uiState) {
                 is RecommendationsUiState.Idle -> {
@@ -188,11 +201,69 @@ fun SellerCustomerRecommendationsScreen(
                     )
                 }
 
-                RecommendationsUiState.Loading -> TODO()
-                is RecommendationsUiState.Success -> TODO()
+                is RecommendationsUiState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                is RecommendationsUiState.LoadRecommendations -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(60.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color(0xFF005F5F)) // mismo color del top bar
+                                .clickable {
+                                    Log.d("RecommendScreen", "Record button clicked. Requesting permission...")
+                                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Videocam,
+                                contentDescription = stringResource(R.string.record_video_desc),
+                                tint = Color.White,
+                                modifier = Modifier.size(36.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        // Lista de recomendaciones o mensaje vacío
+                        if (state.recommendations.isEmpty()) {
+                            Text(
+                                text = "No hay recomendaciones registradas.",
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(top = 24.dp)
+                            )
+                        } else {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                                contentPadding = PaddingValues(bottom = 16.dp)
+                            ) {
+                                items(state.recommendations, key = { it.id }) { recommendation ->
+                                    RecommendationItem(recommendation)
+                                }
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }
+
 }
 
 
@@ -311,3 +382,57 @@ private fun PreviewContent(
         }
     }
 }
+
+@Composable
+fun RecommendationItem(item: RecommendationDisplayItem) {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(LightBeige)
+            .clickable { isExpanded = !isExpanded }
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = formatDate(item.createdAt),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Black
+            )
+            Icon(
+                imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                tint = Color.Black
+            )
+        }
+
+        if (isExpanded) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = item.recommendations,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.DarkGray
+            )
+        }
+    }
+}
+
+@Composable
+private fun formatDate(isoString: String): String {
+    return try {
+        val parser = java.time.format.DateTimeFormatter.ISO_DATE_TIME
+        val formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        val date = java.time.LocalDateTime.parse(isoString, parser)
+        date.format(formatter)
+    } catch (e: Exception) {
+        isoString
+    }
+}
+

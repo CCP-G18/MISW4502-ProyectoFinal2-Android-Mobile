@@ -187,7 +187,7 @@ class VideoRepositoryImpl(
             } catch (e: Exception) {
                 Log.e("RecommendationRepository", "Exception fetching recommendations", e)
                 Result.failure(e)
-            } as Result<RecommendationListResponse>
+            }
         }
     }
 }

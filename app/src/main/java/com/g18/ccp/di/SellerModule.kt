@@ -83,7 +83,7 @@ val sellerModule = module {
     viewModel { params ->
         SellerCustomerRecommendationsViewModel(
             savedStateHandle = params.get(),
-            videoRepository = get()
+            videoRepository = get(),
         )
     }
 }

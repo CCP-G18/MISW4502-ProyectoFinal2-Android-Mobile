@@ -9,12 +9,14 @@ import java.util.Date
 data class RecommendationData(
     val id: String,
     @SerializedName("recommendation_date")
-    val recommendationDate: Date,
+    val recommendationDate: String,
     val recommendations: String,
     @SerializedName("seller_id")
     val sellerId: String,
     @SerializedName("customer_id")
     val customerId: String,
     @SerializedName("video_url")
-    val videoUrl: String
+    val videoUrl: String,
+    @SerializedName("created_at")
+    val createdAt: String
 ): Parcelable
