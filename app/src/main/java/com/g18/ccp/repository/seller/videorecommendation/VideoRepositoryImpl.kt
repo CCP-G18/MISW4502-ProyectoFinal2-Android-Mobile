@@ -6,8 +6,11 @@ import android.util.Log
 import androidx.core.content.FileProvider
 import com.g18.ccp.core.session.UserSessionManager
 import com.g18.ccp.data.local.Datasource
+import com.g18.ccp.data.remote.model.recommendation.RecommendationData
+import com.g18.ccp.data.remote.model.recommendation.RecommendationListResponse
 import com.g18.ccp.data.remote.model.recommendation.VideoUploadResponse
 import com.g18.ccp.data.remote.service.recommendation.VideoApiService
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -18,6 +21,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 class VideoRepositoryImpl(
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val applicationContext: Context,
     private val datasource: Datasource,
     private val videoApiService: VideoApiService
@@ -121,7 +125,19 @@ class VideoRepositoryImpl(
 
                 if (response.isSuccessful && response.body() != null) {
                     Log.i("VideoRepositoryImpl", "Video upload successful: ${response.body()}")
-                    Result.success(response.body()!!)
+                    val responseGenerate = videoApiService.generateRecommendationWithIA(
+                        recmmendationId = response.body()!!.data.id
+                    )
+                    if (responseGenerate.isSuccessful) {
+                        Result.success(responseGenerate.body()!!)
+                    } else {
+                        val errorBody = responseGenerate.errorBody()?.string() ?: "Unknown error"
+                        Log.e(
+                            "VideoRepositoryImpl",
+                            "Video upload failed: ${responseGenerate.code()} - $errorBody"
+                        )
+                        Result.failure(IOException("Upload failed: ${responseGenerate.code()} - $errorBody"))
+                    }
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "Unknown error"
                     Log.e(
@@ -134,6 +150,44 @@ class VideoRepositoryImpl(
                 Log.e("VideoRepositoryImpl", "Exception during video upload", e)
                 Result.failure(e)
             }
+        }
+    }
+
+    override suspend fun getRecommendations(customerId: String): Result<List<RecommendationData>> {
+        return withContext(dispatcher) {
+            try {
+                val sellerId = UserSessionManager.getUserInfo(datasource)?.id
+                Log.d(
+                    "RecommendationRepository",
+                    "Fetching recommendations for customer: $customerId, seller: $sellerId"
+                )
+
+                sellerId?.let {
+                    val response = videoApiService.getRecommendations(customerId, sellerId)
+
+                    if (response.isSuccessful && response.body() != null) {
+                        val recommendations = response.body()!!.data
+                        Log.i(
+                            "RecommendationRepository",
+                            "Successfully fetched ${recommendations.size} recommendations."
+                        )
+                        Result.success(recommendations)
+                    } else {
+                        val errorBody = response.errorBody()?.string() ?: "Error desconocido"
+                        Log.e(
+                            "RecommendationRepository",
+                            "Failed to fetch recommendations: ${response.code()} - $errorBody"
+                        )
+                        Result.failure(Exception("Error ${response.code()}: $errorBody"))
+                    }
+                } ?: run {
+                    Log.e("RecommendationRepository", "Seller ID is null")
+                    Result.failure(Exception("Seller ID is null"))
+                }
+            } catch (e: Exception) {
+                Log.e("RecommendationRepository", "Exception fetching recommendations", e)
+                Result.failure(e)
+            } as Result<RecommendationListResponse>
         }
     }
 }

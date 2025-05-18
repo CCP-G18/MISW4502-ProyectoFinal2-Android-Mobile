@@ -1,6 +1,7 @@
 package com.g18.ccp.repository.seller.videorecommendation
 
 import android.net.Uri
+import com.g18.ccp.data.remote.model.recommendation.RecommendationData
 import com.g18.ccp.data.remote.model.recommendation.VideoUploadResponse
 
 interface VideoRepository {
@@ -11,4 +12,7 @@ interface VideoRepository {
         videoFileName: String,
         customerId: String,
     ): Result<VideoUploadResponse>
+    suspend fun getRecommendations(
+        customerId: String,
+    ): Result<List<RecommendationData>>
 }

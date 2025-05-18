@@ -121,6 +121,8 @@ fun SellerCustomerRecommendationsScreen(
         val message = when (val state = uiState) {
             is RecommendationsUiState.Idle -> state.message
             is RecommendationsUiState.Preview -> state.message
+            RecommendationsUiState.Loading -> TODO()
+            is RecommendationsUiState.Success -> TODO()
         }
         if (message != null) {
             snackbarHostState.showSnackbar(message = message, duration = SnackbarDuration.Short)
@@ -131,6 +133,8 @@ fun SellerCustomerRecommendationsScreen(
     val showDialog = when (val state = uiState) {
         is RecommendationsUiState.Idle -> state.showDeleteConfirmDialog
         is RecommendationsUiState.Preview -> state.showDeleteConfirmDialog
+        RecommendationsUiState.Loading -> TODO()
+        is RecommendationsUiState.Success -> TODO()
     }
     if (showDialog) {
         AlertDialog(
@@ -183,6 +187,9 @@ fun SellerCustomerRecommendationsScreen(
                         onReceiveClick = { viewModel.onReceiveRecommendationClick() }
                     )
                 }
+
+                RecommendationsUiState.Loading -> TODO()
+                is RecommendationsUiState.Success -> TODO()
             }
         }
     }

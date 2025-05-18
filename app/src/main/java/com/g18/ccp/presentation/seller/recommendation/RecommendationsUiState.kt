@@ -16,5 +16,11 @@ sealed interface RecommendationsUiState {
         val message: String? = null
     ) : RecommendationsUiState
 
+    data object Loading: RecommendationsUiState
+
+    data class Success(
+        val recommendations: List<RecommendationDisplayItem>
+    ): RecommendationsUiState
+
     // data class Error(val message: String) : RecommendationsUiState
 }

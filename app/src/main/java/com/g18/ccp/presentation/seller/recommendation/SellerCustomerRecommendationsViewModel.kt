@@ -6,16 +6,24 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.g18.ccp.core.constants.CUSTOMER_ID_ARG
+import com.g18.ccp.core.session.UserSessionManager
+import com.g18.ccp.data.local.Datasource
+import com.g18.ccp.presentation.seller.customervisit.list.VisitsScreenUiState
 import com.g18.ccp.repository.seller.videorecommendation.VideoRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class SellerCustomerRecommendationsViewModel(
     savedStateHandle: SavedStateHandle,
-    private val videoRepository: VideoRepository
+    private val videoRepository: VideoRepository,
+    private val datasource: Datasource
 ) : ViewModel() {
 
     private val customerId: String = checkNotNull(savedStateHandle[CUSTOMER_ID_ARG])
@@ -23,6 +31,38 @@ class SellerCustomerRecommendationsViewModel(
 
     private val _uiState = MutableStateFlow<RecommendationsUiState>(RecommendationsUiState.Idle())
     val uiState: StateFlow<RecommendationsUiState> = _uiState.asStateFlow()
+
+    fun loadInitialData() {
+        viewModelScope.launch {
+            _uiState.value = RecommendationsUiState.Loading
+
+            val recommendationsResult = videoRepository.getRecommendations(customerId)
+            recommendationsResult.onSuccess { recommendationDataList ->
+                Log.d("VisitsVM", "Successfully fetched ${recommendationDataList.size} visits.")
+                val displayRecommendationDeferred = recommendationDataList.map { recommendationData ->
+                    async {
+                        RecommendationDisplayItem(
+                            id = recommendationData.id,
+                            recommendations = recommendationData.recommendations,
+                            recommendationDate = formatDate(recommendationData.recommendationDate),
+                        )
+                    }
+                }
+                val displayRecommendations =
+                    displayRecommendationDeferred.awaitAll().sortedByDescending { it.recommendationDate }
+                _uiState.value = RecommendationsUiState.Success(
+                    recommendations = displayRecommendations
+                )
+            }
+            recommendationsResult.onFailure { exception ->
+                Log.e("VisitsVM", "Failed to fetch visits", exception)
+
+                _uiState.value = RecommendationsUiState.Success(
+                    recommendations = listOf()
+                )
+            }
+        }
+    }
 
     fun onVideoRecorded(tempUri: Uri?) {
         if (tempUri == null) {
@@ -54,6 +94,16 @@ class SellerCustomerRecommendationsViewModel(
                     message = "Error al guardar el vídeo: ${exception.message}"
                 )
             }
+        }
+    }
+
+    private fun formatDate(date: java.util.Date): String {
+        return try {
+            val outputFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+            outputFormat.format(date)
+        } catch (e: Exception) {
+            Log.e("VisitDataMapping", "Error formatting date object: $date", e)
+            date.toString()
         }
     }
 
@@ -126,6 +176,8 @@ class SellerCustomerRecommendationsViewModel(
             when (currentState) {
                 is RecommendationsUiState.Idle -> currentState.copy(message = null)
                 is RecommendationsUiState.Preview -> currentState.copy(message = null)
+                RecommendationsUiState.Loading -> TODO()
+                is RecommendationsUiState.Success -> TODO()
             }
         }
     }
@@ -172,6 +224,8 @@ class SellerCustomerRecommendationsViewModel(
             when (currentState) {
                 is RecommendationsUiState.Idle -> currentState.copy(showDeleteConfirmDialog = false)
                 is RecommendationsUiState.Preview -> currentState.copy(showDeleteConfirmDialog = false)
+                RecommendationsUiState.Loading -> TODO()
+                is RecommendationsUiState.Success -> TODO()
             }
         }
     }
@@ -181,6 +235,8 @@ class SellerCustomerRecommendationsViewModel(
             when (currentState) {
                 is RecommendationsUiState.Idle -> currentState.copy(showDeleteConfirmDialog = true)
                 is RecommendationsUiState.Preview -> currentState.copy(showDeleteConfirmDialog = true)
+                RecommendationsUiState.Loading -> TODO()
+                is RecommendationsUiState.Success -> TODO()
             }
         }
     }
