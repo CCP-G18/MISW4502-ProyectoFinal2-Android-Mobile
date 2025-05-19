@@ -105,6 +105,7 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "/com/g18/ccp/core/utils/mapper/MappersKt.*",
         "/com/g18/ccp/data/local/model/room/**",
         "/com/g18/ccp/data/remote/service/seller/visits/VisitService.*",
+        "**/*CategoryService*",
     )
 
     val javaTree =
@@ -226,6 +227,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.socket.io)
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     testImplementation(libs.junit.junit)

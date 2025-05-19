@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.People
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,25 +27,43 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.g18.ccp.R
+import com.g18.ccp.core.constants.CATEGORY_ID_ARG
 import com.g18.ccp.core.constants.CUSTOMER_ID_ARG
+import com.g18.ccp.core.constants.SELLER_CART_BASE_ROUTE
+import com.g18.ccp.core.constants.SELLER_CART_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMERS_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_MANAGEMENT_ROUTE
+import com.g18.ccp.core.constants.SELLER_CUSTOMER_ORDERS_BASE_ROUTE
+import com.g18.ccp.core.constants.SELLER_CUSTOMER_ORDERS_ROUTE
+import com.g18.ccp.core.constants.SELLER_CUSTOMER_PERSONAL_INFO_BASE_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_PERSONAL_INFO_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_VISITS_ROUTE
 import com.g18.ccp.core.constants.SELLER_HOME_ROUTE
+import com.g18.ccp.core.constants.SELLER_PRODUCTS_BY_CATEGORY_ROUTE
+import com.g18.ccp.core.constants.SELLER_PRODUCTS_CATEGORIES_ROUTE
 import com.g18.ccp.core.constants.SELLER_REGISTER_VISIT_BASE_ROUTE
 import com.g18.ccp.core.constants.SELLER_REGISTER_VISIT_ROUTE
 import com.g18.ccp.core.constants.enums.SellerBottomNavItem
+import com.g18.ccp.core.constants.enums.isCustomerRoute
+import com.g18.ccp.core.constants.enums.isHome
 import com.g18.ccp.presentation.auth.MainSessionViewModel
 import com.g18.ccp.presentation.seller.customermanagement.SellerCustomerManagementViewModel
 import com.g18.ccp.presentation.seller.customerslist.SellerCustomersViewModel
 import com.g18.ccp.presentation.seller.customervisit.list.SellerCustomerVisitsViewModel
 import com.g18.ccp.presentation.seller.home.SellerHomeViewModel
+import com.g18.ccp.presentation.seller.order.category.CategoryViewModel
+import com.g18.ccp.presentation.seller.order.category.products.SellerCategoryProductsViewModel
+import com.g18.ccp.presentation.seller.order.category.products.cart.SellerCartViewModel
+import com.g18.ccp.presentation.seller.order.createorder.SellerCustomerOrdersViewModel
 import com.g18.ccp.presentation.seller.personalinfo.SellerCustomerPersonalInfoViewModel
 import com.g18.ccp.presentation.seller.recommendation.SellerCustomerRecommendationsViewModel
 import com.g18.ccp.ui.core.CcpTopBar
 import com.g18.ccp.ui.core.navigation.MenuItemData
+import com.g18.ccp.ui.order.seller.category.CategoryScreen
+import com.g18.ccp.ui.order.seller.listproducts.SellerCategoryProductsScreen
+import com.g18.ccp.ui.order.seller.order.cart.SellerCartScreen
+import com.g18.ccp.ui.order.seller.order.createorder.SellerCustomerOrdersScreen
 import com.g18.ccp.ui.seller.customer.SellerCustomerListScreen
 import com.g18.ccp.ui.seller.customer.customervisit.list.SellerCustomerVisitsScreen
 import com.g18.ccp.ui.seller.customer.customervisit.register.SellerRegisterVisitScreen
@@ -66,6 +85,7 @@ fun SellerNavigationBar(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val bottomNavItems = remember { SellerBottomNavItem.entries }
+    val customerId: String? = navBackStackEntry?.arguments?.getString(CUSTOMER_ID_ARG)
 
     val showBottomBar = currentRoute in listOf(
         SELLER_CUSTOMERS_ROUTE,
@@ -73,6 +93,8 @@ fun SellerNavigationBar(
         SELLER_CUSTOMER_PERSONAL_INFO_ROUTE,
         SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE,
         SELLER_CUSTOMER_VISITS_ROUTE,
+        SELLER_PRODUCTS_BY_CATEGORY_ROUTE,
+        SELLER_CUSTOMER_ORDERS_ROUTE,
     )
 
     val title = when (currentRoute) {
@@ -85,6 +107,11 @@ fun SellerNavigationBar(
 
         SELLER_REGISTER_VISIT_ROUTE,
         SELLER_CUSTOMER_VISITS_ROUTE -> stringResource(R.string.visits_title)
+
+        SELLER_CUSTOMER_ORDERS_ROUTE,
+        SELLER_PRODUCTS_CATEGORIES_ROUTE,
+        SELLER_PRODUCTS_BY_CATEGORY_ROUTE,
+        SELLER_CART_ROUTE -> stringResource(R.string.orders_title)
 
         else -> stringResource(R.string.app_name)
     }
@@ -109,13 +136,21 @@ fun SellerNavigationBar(
         ),
     )
 
+    val currentItem = SellerBottomNavItem.fromRoute(currentRoute) ?: SellerBottomNavItem.HOME
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CcpTopBar(
                 title = title,
                 topBarColor = SecondaryColor,
-                menuData = menuData
+                menuData = menuData,
+                actionIcon = if (currentItem.isHome()) Icons.Outlined.ShoppingCart else null,
+                onActionClick = {
+                    if (currentItem.isHome() && customerId != null) {
+                        navController.navigate("$SELLER_CART_BASE_ROUTE/$customerId")
+                    }
+                }
             )
         },
         bottomBar = {
@@ -127,7 +162,13 @@ fun SellerNavigationBar(
                             NavigationBarItem(
                                 selected = isSelected,
                                 onClick = {
-                                    navController.navigate(item.route) {
+                                    navController.navigate(
+                                        if (item.isCustomerRoute()) {
+                                            "$SELLER_CUSTOMER_PERSONAL_INFO_BASE_ROUTE/$customerId"
+                                        } else {
+                                            item.route
+                                        }
+                                    ) {
                                         popUpTo(SellerBottomNavItem.HOME.route)
                                         launchSingleTop = true
                                         restoreState = true
@@ -178,7 +219,6 @@ fun SellerNavigationBar(
                 route = SELLER_CUSTOMER_MANAGEMENT_ROUTE,
                 arguments = listOf(navArgument(CUSTOMER_ID_ARG) { type = NavType.StringType })
             ) { backStackEntry ->
-                val customerId = backStackEntry.arguments?.getString(CUSTOMER_ID_ARG)
                 val viewModel: SellerCustomerManagementViewModel = koinViewModel()
 
                 if (customerId != null) {
@@ -216,7 +256,6 @@ fun SellerNavigationBar(
                 SellerCustomerVisitsScreen(
                     viewModel = viewModel,
                     onRegisterVisitClick = {
-                        val customerId = backStackEntry.arguments?.getString(CUSTOMER_ID_ARG)
                         if (customerId != null)
                             navController.navigate("$SELLER_REGISTER_VISIT_BASE_ROUTE/$customerId")
                     }
@@ -230,6 +269,64 @@ fun SellerNavigationBar(
                     onVisitCompletedAndNavigateBack = {
                         navController.popBackStack()
                     }
+                )
+            }
+            composable(
+                route = SELLER_PRODUCTS_CATEGORIES_ROUTE,
+                arguments = listOf(navArgument(CUSTOMER_ID_ARG) { type = NavType.StringType })
+            ) {
+                val viewModel: CategoryViewModel = koinViewModel()
+                CategoryScreen(
+                    viewModel,
+                    navController
+                )
+            }
+            composable(
+                route = SELLER_PRODUCTS_BY_CATEGORY_ROUTE,
+                arguments = listOf(
+                    navArgument(CUSTOMER_ID_ARG) { type = NavType.StringType },
+                    navArgument(CATEGORY_ID_ARG) { type = NavType.StringType })
+            ) {
+                val viewModel: CategoryViewModel = koinViewModel()
+                CategoryScreen(
+                    viewModel,
+                    navController
+                )
+            }
+
+            composable(
+                route = SELLER_PRODUCTS_BY_CATEGORY_ROUTE,
+                arguments = listOf(
+                    navArgument(CUSTOMER_ID_ARG) { type = NavType.StringType },
+                    navArgument(CATEGORY_ID_ARG) { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val sellerCategoryProductsViewModel: SellerCategoryProductsViewModel =
+                    koinViewModel()
+                SellerCategoryProductsScreen(
+                    viewModel = sellerCategoryProductsViewModel,
+                )
+            }
+
+            composable(
+                route = SELLER_CART_ROUTE,
+            ) { backStackEntry ->
+                // El customerId se pasa automáticamente al ViewModel
+                val sellerCartViewModel: SellerCartViewModel = koinViewModel()
+                SellerCartScreen(
+                    viewModel = sellerCartViewModel,
+                    onOrderConfirmed = {
+                        navController.navigate("$SELLER_CUSTOMER_ORDERS_BASE_ROUTE/$customerId")
+                    }
+                )
+            }
+
+            composable(
+                route = SELLER_CUSTOMER_ORDERS_ROUTE,
+            ) { backStackEntry ->
+                val sellerCustomerOrdersViewModel: SellerCustomerOrdersViewModel = koinViewModel()
+                SellerCustomerOrdersScreen(
+                    viewModel = sellerCustomerOrdersViewModel
                 )
             }
         }

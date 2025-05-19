@@ -3,9 +3,9 @@ package com.g18.ccp.repository.seller
 import android.util.Log
 import com.g18.ccp.MainDispatcherRule
 import com.g18.ccp.core.constants.enums.IdentificationType
-import com.g18.ccp.core.utils.mapper.toDomainModel
-import com.g18.ccp.core.utils.mapper.toDomainModelList
-import com.g18.ccp.core.utils.mapper.toEntityList
+import com.g18.ccp.core.utils.mapper.toCustomerEntityList
+import com.g18.ccp.core.utils.mapper.toDomainCustomerModel
+import com.g18.ccp.core.utils.mapper.toDomainCustomerModelList
 import com.g18.ccp.data.local.model.room.dao.CustomerDao
 import com.g18.ccp.data.local.model.room.model.CustomerEntity
 import com.g18.ccp.data.remote.model.seller.CustomerData
@@ -77,7 +77,7 @@ class CustomerRepositoryImplTest {
             val fakeEntityList = listOf(TestData.entity("1"), TestData.entity("2"))
             val expectedDataList = listOf(TestData.customerData("1"), TestData.customerData("2"))
             every { customerDao.getAllCustomers() } returns flowOf(fakeEntityList)
-            every { fakeEntityList.toDomainModelList() } returns expectedDataList
+            every { fakeEntityList.toDomainCustomerModelList() } returns expectedDataList
 
             val resultFlow = repository.getCustomers()
             advanceUntilIdle()
@@ -85,7 +85,7 @@ class CustomerRepositoryImplTest {
 
             assertEquals(expectedDataList, resultData)
             verify(exactly = 1) { customerDao.getAllCustomers() }
-            verify(exactly = 1) { fakeEntityList.toDomainModelList() }
+            verify(exactly = 1) { fakeEntityList.toDomainCustomerModelList() }
         }
 
     @Test
@@ -94,7 +94,7 @@ class CustomerRepositoryImplTest {
             val emptyEntityList = emptyList<CustomerEntity>()
             val expectedDataList = emptyList<CustomerData>()
             every { customerDao.getAllCustomers() } returns flowOf(emptyEntityList)
-            every { emptyEntityList.toDomainModelList() } returns expectedDataList
+            every { emptyEntityList.toDomainCustomerModelList() } returns expectedDataList
 
             val resultFlow = repository.getCustomers()
             advanceUntilIdle()
@@ -103,7 +103,7 @@ class CustomerRepositoryImplTest {
 
             assertEquals(expectedDataList, resultData)
             verify(exactly = 1) { customerDao.getAllCustomers() }
-            verify(exactly = 1) { emptyEntityList.toDomainModelList() }
+            verify(exactly = 1) { emptyEntityList.toDomainCustomerModelList() }
         }
 
 
@@ -114,7 +114,7 @@ class CustomerRepositoryImplTest {
             val fakeEntity = TestData.entity(customerId)
             val expectedData = TestData.customerData(customerId)
             every { customerDao.getCustomerById(customerId) } returns flowOf(fakeEntity)
-            every { fakeEntity.toDomainModel() } returns expectedData
+            every { fakeEntity.toDomainCustomerModel() } returns expectedData
 
             val resultFlow = repository.getCustomerById(customerId)
             advanceUntilIdle()
@@ -122,7 +122,7 @@ class CustomerRepositoryImplTest {
 
             assertEquals(expectedData, resultData)
             verify(exactly = 1) { customerDao.getCustomerById(customerId) }
-            verify(exactly = 1) { fakeEntity.toDomainModel() }
+            verify(exactly = 1) { fakeEntity.toDomainCustomerModel() }
         }
 
     @Test
@@ -152,7 +152,7 @@ class CustomerRepositoryImplTest {
                 status = "success"
             ) // Use user's class structure
             coEvery { customerService.getCustomers() } returns fakeResponse
-            every { fakeDataList.toEntityList() } returns fakeEntityList
+            every { fakeDataList.toCustomerEntityList() } returns fakeEntityList
             coEvery { customerDao.insertAll(fakeEntityList) } just runs
 
             val result = repository.refreshCustomers()
@@ -160,7 +160,7 @@ class CustomerRepositoryImplTest {
 
             assertTrue(result.isSuccess)
             coVerify(exactly = 1) { customerService.getCustomers() }
-            verify(exactly = 1) { fakeDataList.toEntityList() }
+            verify(exactly = 1) { fakeDataList.toCustomerEntityList() }
             coVerify(exactly = 1) { customerDao.insertAll(fakeEntityList) }
         }
 
@@ -181,7 +181,7 @@ class CustomerRepositoryImplTest {
             assertTrue(result.isFailure)
             assertEquals("API Error 400: Bad Request", result.exceptionOrNull()?.message)
             coVerify(exactly = 1) { customerService.getCustomers() }
-            verify(exactly = 0) { any<List<CustomerData>>().toEntityList() }
+            verify(exactly = 0) { any<List<CustomerData>>().toCustomerEntityList() }
             coVerify(exactly = 0) { customerDao.insertAll(any()) }
         }
 
@@ -197,7 +197,7 @@ class CustomerRepositoryImplTest {
             assertTrue(result.isFailure)
             assertEquals(expectedException, result.exceptionOrNull())
             coVerify(exactly = 1) { customerService.getCustomers() }
-            verify(exactly = 0) { any<List<CustomerData>>().toEntityList() }
+            verify(exactly = 0) { any<List<CustomerData>>().toCustomerEntityList() }
             coVerify(exactly = 0) { customerDao.insertAll(any()) }
         }
 
@@ -215,7 +215,7 @@ class CustomerRepositoryImplTest {
             )
             val dbException = RuntimeException("DB Insert Failed")
             coEvery { customerService.getCustomers() } returns fakeResponse
-            every { fakeDataList.toEntityList() } returns fakeEntityList
+            every { fakeDataList.toCustomerEntityList() } returns fakeEntityList
             coEvery { customerDao.insertAll(fakeEntityList) } throws dbException
 
             val result = repository.refreshCustomers()
@@ -224,7 +224,7 @@ class CustomerRepositoryImplTest {
             assertTrue(result.isFailure)
             assertEquals(dbException, result.exceptionOrNull())
             coVerify(exactly = 1) { customerService.getCustomers() }
-            verify(exactly = 1) { fakeDataList.toEntityList() }
+            verify(exactly = 1) { fakeDataList.toCustomerEntityList() }
             coVerify(exactly = 1) { customerDao.insertAll(fakeEntityList) }
         }
 }
