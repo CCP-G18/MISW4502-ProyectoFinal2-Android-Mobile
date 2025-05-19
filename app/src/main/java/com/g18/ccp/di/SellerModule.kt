@@ -6,6 +6,7 @@ import com.g18.ccp.data.local.model.room.dao.CustomerDao
 import com.g18.ccp.data.local.model.room.dao.SellerCartDao
 import com.g18.ccp.data.local.model.room.dao.SellerProductDao
 import com.g18.ccp.data.local.model.room.database.AppDatabase
+import com.g18.ccp.data.remote.service.recommendation.VideoApiService
 import com.g18.ccp.data.remote.service.seller.CustomerService
 import com.g18.ccp.data.remote.service.seller.order.SellerCustomerOrderService
 import com.g18.ccp.data.remote.service.seller.order.category.CategoryService
@@ -57,7 +58,14 @@ val sellerModule = module {
             customerDao = get(),
         )
     }
-    single<VideoRepository> { VideoRepositoryImpl(androidContext()) }
+    single<VideoApiService> { get<RetrofitProvider>().instance.create(VideoApiService::class.java) }
+    single<VideoRepository> {
+        VideoRepositoryImpl(
+            applicationContext = androidContext(),
+            datasource = get(),
+            videoApiService = get(),
+        )
+    }
     single<VisitService> { get<RetrofitProvider>().instance.create(VisitService::class.java) }
     single<VisitRepository> { VisitRepositoryImpl(datasource = get(), visitApiService = get()) }
     single<SellerCategoryRepository> {
@@ -132,7 +140,7 @@ val sellerModule = module {
     viewModel { params ->
         SellerCustomerRecommendationsViewModel(
             savedStateHandle = params.get(),
-            videoRepository = get()
+            videoRepository = get(),
         )
     }
     viewModel { params ->
