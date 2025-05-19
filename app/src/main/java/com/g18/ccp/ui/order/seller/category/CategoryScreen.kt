@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,13 +43,14 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.g18.ccp.R
-import com.g18.ccp.core.constants.SELLER_PRODUCTS_BY_CATEGORY_BASE_ROUTE
+import com.g18.ccp.core.constants.SELLER_PRODUCTS_CATEGORIES_BASE_ROUTE
 import com.g18.ccp.data.remote.model.seller.order.CategoryData
 import com.g18.ccp.presentation.seller.order.category.CategoryUiState
 import com.g18.ccp.presentation.seller.order.category.CategoryViewModel
 import com.g18.ccp.ui.theme.BackgroundColor
 import com.g18.ccp.ui.theme.BlackColor
 import com.g18.ccp.ui.theme.ErrorColor
+import com.g18.ccp.ui.theme.LightBeige
 import com.g18.ccp.ui.theme.LightGray
 import com.g18.ccp.ui.theme.MainColor
 
@@ -56,7 +58,7 @@ import com.g18.ccp.ui.theme.MainColor
 @Composable
 fun CategoryScreen(
     viewModel: CategoryViewModel,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val filteredCategory by viewModel.filteredCategories.collectAsStateWithLifecycle()
@@ -146,11 +148,11 @@ fun CategoryScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp)
                     ) {
-                        items(filteredCategory.size, key = { filteredCategory[it] }) { it ->
+                        items(filteredCategory.size, key = { filteredCategory[it] }) {
                             val category = filteredCategory[it]
                             CategoryCard(category = category, onClick = {
                                 navController.navigate(
-                                    "$SELLER_PRODUCTS_BY_CATEGORY_BASE_ROUTE/${category.id}"
+                                    "$SELLER_PRODUCTS_CATEGORIES_BASE_ROUTE/${viewModel.customerId}/products/category/${category.id}"
                                 )
                             })
                         }
@@ -185,6 +187,12 @@ fun CategoryCard(
     Card(
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardColors(
+            containerColor = LightBeige,
+            contentColor = LightBeige,
+            disabledContentColor = LightGray,
+            disabledContainerColor = LightGray
+        ),
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }

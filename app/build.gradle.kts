@@ -227,6 +227,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.socket.io)
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     testImplementation(libs.junit.junit)

@@ -128,4 +128,28 @@
     <string name="delete_visit_content_description">Eliminar visita</string>
     <string name="back_button">Volver</string>
     <string name="today_text">Hoy</string>
+
+    <string name="product_categories_title">Categoría de Productos</string>
+    <string name="products_title">Productos</string>
+    <string name="search_products_placeholder">Buscar productos...</string>
+    <string name="add_to_cart_button">Agregar al carro</string>
+    <string name="product_added_to_cart_message">Producto agregado al carro</string>
+    <string name="go_to_cart_button">Ir al carro de compras</string>
+    <string name="no_products_in_category">No hay productos en esta categoría.</string>
+
+    <string name="error_db_generic">Error de base de datos: %1$s</string>
+    <string name="error_refresh_products">Fallo al actualizar productos: %1$s</string>
+    <string name="error_quantity_zero">Debe seleccionar al menos 1 unidad.</string>
+    <string name="error_quantity_exceeds_stock">Cantidad excede el stock disponible (%1$d)</string>
+    <string name="product_added_to_cart_message_with_name">Producto \'%1$s\' agregado al carro.</string>
+    <string name="error_add_to_cart">Error al agregar: %1$s</string>
+
+    <string name="cart_empty">Carro de compras vacío</string>
+    <string name="total_to_pay">Total a pagar: %1$s</string>
+    <string name="confirm_order_button">Confirmar Pedido</string>
+    <string name="remove_item">Eliminar ítem</string>
+
+    <string name="order_summary_title">Resumen pedido</string>
+    <string name="order_summary_delivery_date">Fecha entrega: %1$s</string>
+    <string name="order_summary_total">Total pedido: %1$s</string>
 </resources>

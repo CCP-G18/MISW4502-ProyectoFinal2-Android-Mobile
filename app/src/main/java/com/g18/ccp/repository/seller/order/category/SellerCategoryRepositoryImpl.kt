@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-class SellerProductRepositoryImpl(
+class SellerCategoryRepositoryImpl(
     private val categoryService: CategoryService,
     private val categoryDao: CategoryDao
-) : SellerProductRepository {
+) : SellerCategoryRepository {
     override suspend fun getCategories(): Flow<List<CategoryData>> {
         Log.d("SellerProductRepositoryImpl", "getCategories called - Reading from Room Flow")
         return categoryDao.getAllCategories()

@@ -8,12 +8,20 @@ import androidx.room.TypeConverters
 import com.g18.ccp.data.local.model.room.converter.Converters
 import com.g18.ccp.data.local.model.room.dao.CategoryDao
 import com.g18.ccp.data.local.model.room.dao.CustomerDao
+import com.g18.ccp.data.local.model.room.dao.SellerCartDao
+import com.g18.ccp.data.local.model.room.dao.SellerProductDao
 import com.g18.ccp.data.local.model.room.model.CategoryEntity
 import com.g18.ccp.data.local.model.room.model.CustomerEntity
+import com.g18.ccp.data.local.model.room.model.SellerCartItemEntity
+import com.g18.ccp.data.local.model.room.model.SellerProductEntity
 
 @Database(
-    entities = [CustomerEntity::class, CategoryEntity::class],
-    version = 2,
+    entities = [
+        CustomerEntity::class,
+        CategoryEntity::class,
+        SellerProductEntity::class,
+        SellerCartItemEntity::class],
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -21,6 +29,8 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun customerDao(): CustomerDao
     abstract fun categoryDao(): CategoryDao
+    abstract fun sellerProductDao(): SellerProductDao
+    abstract fun sellerCartDao(): SellerCartDao
 
     companion object {
         @Volatile

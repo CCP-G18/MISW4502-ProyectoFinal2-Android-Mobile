@@ -10,11 +10,14 @@ import com.g18.ccp.R
 import com.g18.ccp.core.constants.SELLER_CUSTOMERS_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_MANAGEMENT_BASE_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_MANAGEMENT_ROUTE
+import com.g18.ccp.core.constants.SELLER_CUSTOMER_ORDERS_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_PERSONAL_INFO_BASE_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_PERSONAL_INFO_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE
 import com.g18.ccp.core.constants.SELLER_CUSTOMER_VISITS_ROUTE
 import com.g18.ccp.core.constants.SELLER_HOME_ROUTE
+import com.g18.ccp.core.constants.SELLER_PRODUCTS_BY_CATEGORY_ROUTE
+import com.g18.ccp.core.constants.SELLER_PRODUCTS_CATEGORIES_ROUTE
 import com.g18.ccp.core.constants.SELLER_REGISTER_VISIT_ROUTE
 
 enum class SellerBottomNavItem(
@@ -35,6 +38,8 @@ enum class SellerBottomNavItem(
             SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE,
             SELLER_CUSTOMER_VISITS_ROUTE,
             SELLER_REGISTER_VISIT_ROUTE,
+            SELLER_PRODUCTS_BY_CATEGORY_ROUTE,
+            SELLER_CUSTOMER_ORDERS_ROUTE
         )
     ),
     CUSTOMERS(
@@ -47,6 +52,8 @@ enum class SellerBottomNavItem(
             SELLER_CUSTOMER_PERSONAL_INFO_ROUTE,
             SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE,
             SELLER_CUSTOMER_VISITS_ROUTE,
+            SELLER_PRODUCTS_CATEGORIES_ROUTE,
+            SELLER_CUSTOMER_ORDERS_ROUTE,
         )
     ),
     CUSTOMER(
@@ -59,6 +66,16 @@ enum class SellerBottomNavItem(
             SELLER_CUSTOMER_RECOMMENDATIONS_ROUTE,
             SELLER_CUSTOMER_VISITS_ROUTE,
             SELLER_REGISTER_VISIT_ROUTE,
+            SELLER_PRODUCTS_BY_CATEGORY_ROUTE,
+            SELLER_PRODUCTS_CATEGORIES_ROUTE,
         )
     );
+
+    companion object {
+        fun fromRoute(route: String?): SellerBottomNavItem? =
+            SellerBottomNavItem.entries.firstOrNull { it.route == route }
+    }
 }
+
+fun SellerBottomNavItem.isHome(): Boolean = this == SellerBottomNavItem.HOME
+fun SellerBottomNavItem.isCustomerRoute(): Boolean = this == SellerBottomNavItem.CUSTOMER

@@ -29,14 +29,14 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SellerProductRepositoryImplTest {
+class SellerCategoryRepositoryImplTest {
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     private val categoryDao: CategoryDao = mockk()
     private val categoryService: CategoryService = mockk()
-    private lateinit var repository: SellerProductRepositoryImpl
+    private lateinit var repository: SellerCategoryRepositoryImpl
 
     @Before
     fun setup() {
@@ -45,7 +45,7 @@ class SellerProductRepositoryImplTest {
         every { Log.i(any(), any()) } returns 0
         every { Log.e(any(), any(), any<Throwable>()) } returns 0
 
-        repository = SellerProductRepositoryImpl(categoryService, categoryDao)
+        repository = SellerCategoryRepositoryImpl(categoryService, categoryDao)
     }
 
     @After

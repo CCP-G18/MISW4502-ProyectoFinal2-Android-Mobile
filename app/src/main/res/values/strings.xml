@@ -128,4 +128,28 @@
     <string name="delete_visit_content_description">Delete visit</string>
     <string name="back_button">Back</string>
     <string name="today_text">Today</string>
+
+    <string name="product_categories_title">Product Categories</string>
+    <string name="products_title">Products</string>
+    <string name="search_products_placeholder">Search products…</string>
+    <string name="add_to_cart_button">Add to Cart</string>
+    <string name="product_added_to_cart_message">Product added to cart</string>
+    <string name="go_to_cart_button">Go to Shopping Cart</string>
+    <string name="no_products_in_category">No products in this category.</string>
+
+    <string name="error_db_generic">Database error: %1$s</string>
+    <string name="error_refresh_products">Failed to refresh products: %1$s</string>
+    <string name="error_quantity_zero">You must select at least 1 unit.</string>
+    <string name="error_quantity_exceeds_stock">Quantity exceeds available stock (%1$d)</string>
+    <string name="product_added_to_cart_message_with_name">Product %1$s added to cart.</string>
+    <string name="error_add_to_cart">Error adding to cart: %1$s</string>
+
+    <string name="cart_empty">Shopping cart empty</string>
+    <string name="total_to_pay">Total to pay: %1$s</string>
+    <string name="confirm_order_button">Confirm Order</string>
+    <string name="remove_item">Remove item</string>
+
+    <string name="order_summary_title">Order summary</string>
+    <string name="order_summary_delivery_date">Delivery date: %1$s</string>
+    <string name="order_summary_total">Order total: %1$s</string>
 </resources>

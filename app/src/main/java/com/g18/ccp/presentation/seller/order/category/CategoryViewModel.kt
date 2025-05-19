@@ -1,10 +1,12 @@
 package com.g18.ccp.presentation.seller.order.category
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.g18.ccp.core.constants.CUSTOMER_ID_ARG
 import com.g18.ccp.data.remote.model.seller.order.CategoryData
-import com.g18.ccp.repository.seller.order.category.SellerProductRepository
+import com.g18.ccp.repository.seller.order.category.SellerCategoryRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,9 +20,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CategoryViewModel(
-    private val categoryRepository: SellerProductRepository,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val categoryRepository: SellerCategoryRepository,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+
+    val customerId: String = checkNotNull(savedStateHandle[CUSTOMER_ID_ARG]) {
+        "Customer ID no fue pasado a SellerCustomerManagementViewModel"
+    }
 
     private val _uiState = MutableStateFlow<CategoryUiState>(CategoryUiState.Loading)
     val uiState: StateFlow<CategoryUiState> = _uiState.asStateFlow()

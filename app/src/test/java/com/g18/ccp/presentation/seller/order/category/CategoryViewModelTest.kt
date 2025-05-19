@@ -1,9 +1,11 @@
 package com.g18.ccp.presentation.seller.order.category
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import com.g18.ccp.MainDispatcherRule
+import com.g18.ccp.core.constants.CUSTOMER_ID_ARG
 import com.g18.ccp.data.remote.model.seller.order.CategoryData
-import com.g18.ccp.repository.seller.order.category.SellerProductRepository
+import com.g18.ccp.repository.seller.order.category.SellerCategoryRepository
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -34,7 +36,8 @@ class CategoryViewModelTest {
     val mainDispatcherRule = MainDispatcherRule(testDispatcher)
 
     private lateinit var viewModel: CategoryViewModel
-    private val categoryRepository = mockk<SellerProductRepository>()
+    private val categoryRepository = mockk<SellerCategoryRepository>()
+    private val savedStateHandle = SavedStateHandle(mapOf(CUSTOMER_ID_ARG to "123"))
 
     @Before
     fun setup() {
@@ -69,7 +72,7 @@ class CategoryViewModelTest {
             coEvery { categoryRepository.getCategories() } returns flowOf(listOf(catB, catA))
             coEvery { categoryRepository.refreshCategories() } returns Result.success(Unit)
 
-            viewModel = CategoryViewModel(categoryRepository, testDispatcher)
+            viewModel = CategoryViewModel(categoryRepository, testDispatcher, savedStateHandle)
 
             // When starting without resetting to Loading
             viewModel.start(isInitialLoad = false)
@@ -89,7 +92,7 @@ class CategoryViewModelTest {
             coEvery { categoryRepository.getCategories() } returns flow { throw Exception("DB failed") }
             coEvery { categoryRepository.refreshCategories() } returns Result.success(Unit)
 
-            viewModel = CategoryViewModel(categoryRepository, testDispatcher)
+            viewModel = CategoryViewModel(categoryRepository, testDispatcher, savedStateHandle)
 
             // When starting without resetting to Loading
             viewModel.start(isInitialLoad = false)
@@ -107,7 +110,7 @@ class CategoryViewModelTest {
             coEvery { categoryRepository.getCategories() } returns flow { throw Exception("DB failed") }
             coEvery { categoryRepository.refreshCategories() } returns Result.failure(Exception("DB failed"))
 
-            viewModel = CategoryViewModel(categoryRepository, testDispatcher)
+            viewModel = CategoryViewModel(categoryRepository, testDispatcher, savedStateHandle)
 
             // When starting without resetting to Loading
             viewModel.start(isInitialLoad = false)
@@ -135,7 +138,7 @@ class CategoryViewModelTest {
                 RuntimeException("network fail")
             )
 
-            viewModel = CategoryViewModel(categoryRepository, testDispatcher)
+            viewModel = CategoryViewModel(categoryRepository, testDispatcher, savedStateHandle)
 
             // When starting without resetting to Loading
             viewModel.start(isInitialLoad = false)
@@ -172,7 +175,7 @@ class CategoryViewModelTest {
             )
             coEvery { categoryRepository.refreshCategories() } returns Result.success(Unit)
 
-            viewModel = CategoryViewModel(categoryRepository, testDispatcher)
+            viewModel = CategoryViewModel(categoryRepository, testDispatcher, savedStateHandle)
 
             // When starting without resetting to Loading
             viewModel.start(isInitialLoad = false)
